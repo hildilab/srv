@@ -1,0 +1,81 @@
+{% extends "MPPD_layout.html" %}
+{% block title %}Manual{% endblock %}
+{% block body %}
+
+   <div id="faq">
+      
+      <h2>Manual<oben></oben></h2>
+
+      <ul>
+        <li><a href="#fastsearch" class="intralink" >Fast Search</a></li>
+        <li><a href="#advancedsearch" class="intralink">Advanced Search</a></li>
+        <li><a href="#results" class="intralink">Results</a></li>
+      </ul>
+      <br><br>
+
+     <a name="fastsearch" href="{{ url_dir + url_for('search') }}?search=simple" class="js intralink"><h2>Fast Search <toplink></toplink></h2> </a>
+     Search the complete database by one or more characteristics.
+     <br><br>
+      <table >
+        <colgroup>
+          <col width="130">
+          <col width="420">
+          <col width="*">
+        </colgroup>
+      <tr class="usage">
+          <td>* PDB ID</td>
+          <td>Search MPPD by one or more PDB IDs separated by (",").</td>
+          <td class="example">example: 1ar1, 1xio</td>
+      </tr>
+      <tr class="usage">
+          <td>* Keywords</td>
+          <td>Search MPPD by one or more PDB record KEYWDS. Partial matches are allowed.</td>
+          <td class="example">example: transporter</td>
+      </tr>
+      <tr class="usage">
+          <td>* Family</td>
+          <td>Search MPPD by one specific family. Families are defined by the regularly updated database of <a href="http://blanco.biomol.uci.edu/mpstruc/listAll/list">Stephen White</a>. 
+         For channels and transporters the classification of the <a href="http://www.tcdb.org/">Milton Saier laboratory</a> is used. For all other entries indexing of the primary reference is employed.
+ </td>
+
+
+          <td class="example"> example: antiporters</td>
+      </tr>
+      </table>
+      <br><br>
+      
+      <a name="advancedsearch" href="{{ url_dir + url_for('search') }}?search=normal" class="js intralink" ><h2>Advanced Search<toplink></toplink></h2></a>
+      
+      <table >
+        <colgroup>
+          <col width="130">
+          <col width="420">
+          <col width="*">
+        </colgroup>
+      <tr class="usage">
+          <td>* Experimental</td>
+          <td> Choose a method(s) of protein structure determination </td>
+          <td class="example"> example: X-Ray</td>
+      </tr>
+      <tr class="usage">
+         <td></td>
+         <td> Choose the range of structure resolution. </td>
+               <td class="example">example: 0 to 3.5 &#197;</td>
+      </tr>
+      <tr class="usage">
+          <td>* Families</td>
+          <td>The database can be searched by families defined by the regularly updated database of <a href="http://blanco.biomol.uci.edu/mpstruc/listAll/list">Stephen White</a>. 
+         For channels and transporters the classification of the <a href="http://www.tcdb.org/">Milton Saier laboratory</a> is accordingly used. For all other entries indexing of the primary reference is employed. <br> Here you can compose a set of different families i.e. all channels.</td>
+          <td class="example"></td>
+      </tr>
+      </table>
+
+      <br><br>
+
+
+      <a name="results" class="js intralink"><h2>Results<toplink></toplink></h2></a>
+      Results are provided in form of a tabular overview. In the first column a link to Provi "View", a download link "download" and a link to the RCSB-PDB "PDB" is provided.
+<br><br>
+
+   </div>
+{%endblock%}

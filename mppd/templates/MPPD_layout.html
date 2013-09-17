@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+>
+<head profile="http://dublincore.org/documents/dcq-html/">
+<title>MP:PD - {% block title %}{% endblock %}</title>
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<link rel="schema.DCTERMS" href="http://purl.org/dc/terms/">
+<link rel="shortcut icon" href="{{ url_for('statisch',filename='favicon.ico')}}" type="image/x-icon">
+<meta name="DC.title" content="MP:PD: Database Of Membrane Protein Contacts">
+<meta name="DC.creator" content="Dominic Theune">
+<meta name="DC.subject" content="Database Of Membrane Protein Contacts">
+<meta name="DC.description" content="Database Of Membrane Protein Contacts">
+<meta name="DC.publisher" content="Proteinformatics Group: Molecular Modelling">
+<meta name="DC.contributor" content="Dominic Theune">
+<meta name="DC.type" content="Text" scheme="DCTERMS.DCMIType">
+<meta name="DC.format" content="text/html" scheme="DCTERMS.IMT">
+<meta name="DC.identifier"
+      content="http://proteinformatics.charite.de/MP:PD/"
+      scheme="DCTERMS.URI">
+<meta name="DC.language" content="en" scheme="DCTERMS.RFC1766">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="keywords" content="MP:PD, contact, Membrane, Helix, helixpacking, packing, Transmembrane, Protein, Database, crossing, angle, interaction, voronoi">
+<meta name="author" content="Dominic Theune">
+<meta name="description" content="Packing Database Of Membrane Proteins (MP:PD)">
+<meta name="robots" content="all">
+<link rel="stylesheet" type="text/css" href="{{ url_dir + url_for('statisch',filename='style.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_dir + url_for('statisch',filename='js/jquery-ui/css/custom-theme/jquery-ui.css')}}">
+
+<script type="text/javascript" src="{{url_dir + url_for('statisch', filename='js/jquery.min.js')}}"></script>
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='js/jquery-ui/js/jquery-ui.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='js/jquery.query.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='js/jquery.metadata.2.1/jquery.metadata.js') }}"></script>
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='js/script.js') }}"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function (){
+   
+    var now = new Date();
+    var Weekday = new Array(7);
+    Weekday[0]="Sunday";
+    Weekday[1]="Monday";
+    Weekday[2]="Tuesday";
+    Weekday[3]="Wednesday";
+    Weekday[4]="Thursday";
+    Weekday[5]="Friday";
+    Weekday[6]="Saturday";
+    
+    var Month=new Array(12);
+    Month[0]="Jan"
+    Month[1]="Feb"
+    Month[2]="Mar"
+    Month[3]="Apr"
+    Month[4]="May"
+    Month[5]="Jun"
+    Month[6]="Jul"
+    Month[7]="Aug"
+    Month[8]="Sep"
+    Month[9]="Oct"
+    Month[10]="Nov"
+    Month[11]="Dec"
+
+    $('#date').html(Weekday[now.getDay()]+" "+Month[now.getMonth()]+" "+now.getDate()+', '+now.getFullYear());
+
+});
+
+    function update_search( mode ){
+//        console.log( mode );
+        if( mode == 'simple' ){
+            $('#simple_search, #simple_search_title').show();
+            $('#divStandardText, #advanced_search, #advanced_search_title').hide();
+            
+           // document.getElementById('resmin').value="0";
+           // document.getElementById('resmax').value="100";
+            
+
+        }else if( mode == 'normal' ){
+            $('#simple_search, #divStandardText, #advanced_search, #advanced_search_title').show();
+            $('#divStandardText,#simple_search_title').hide();
+         
+           // document.getElementById('resmin').value="0";
+           // document.getElementById('resmax').value="3.5";
+     
+
+        }else{
+            $('#simple_search, #simple_search_title').show();
+            $('#divStandardText, #advanced_search, #advanced_search_title').hide();
+            
+           // document.getElementById('resmin').value="0";
+           // document.getElementById('resmax').value="100";
+        }
+    };
+
+function NachOben () {
+  var y = 0;
+  if (window.pageYOffset) {
+    y = window.pageYOffset;
+  } else if (document.body && document.body.scrollTop) {
+    y = document.body.scrollTop;
+  }
+  if (y > 0) {
+    window.scrollBy(0, 150);
+    setTimeout("NachOben()", 0);
+  }
+}
+
+$(document).ready(function (){
+$('div oben').empty().html('<a class="intralink" name="oben"></a>');
+$('div toplink').empty().html('<a href="#oben" style="float:right;font-size:small;" class="intralink" >[page top]</a>');
+$('#faq a').click(function (e) {
+  e.preventDefault();
+  var offset = $('a[name=' + $(this).attr('href').substr(1) + ']').offset();
+  var optical_fix = 4; /* for better optic */
+  $('html, body').animate({ scrollTop: offset.top - $('#content').offset().top-optical_fix}, 'fast');
+});
+})
+
+</script>
+
+{% block head %}
+
+{% endblock %}
+
+</head>
+
+
+<body>
+
+
+<div id="header">
+    <div id="title" class="ui-widget ui-widget-content">
+        <div id="logo" style="text-align:left;position:relative;height:105px;">
+            <img src="{{url_dir + url_for('images', filename='zeichnung1.png')}}" style="padding-right: 15px; margin-right:15px;height:105px;float:left;border-right:solid #EEEEEE 2px;" alt="MP:PD LOGO">
+
+                
+                {% if version: %}
+                    <b>Version: <font color="#737BA8">{{version}}</font></b>
+                {% endif %}
+                
+                <br>As of  <span id="date"><b>42.42.42  [javscript error]</b></span>
+                there are <span id="noprotein" name="hu" class="ui-secondary-b-color">{{nop[0]}}</span> structures in MP:PD
+                </span>
+                   
+
+
+        </div>
+    </div>
+</div>
+
+<div id="navigation" >
+    <div class="ui-widget ui-nav-box">
+        <div class="ui-widget-header">
+            <span>MP:PD</span>
+        </div>
+        <div class="ui-widget-content">
+            <a href="{{ url_dir + url_for('welcome') }}">Home</a>
+            <a title="simple" href="{{ url_dir + url_for('search') }}?search=simple" class="js">Fast Search</a>
+            <a title="normal" href="{{ url_dir + url_for('search') }}?search=normal" class="js">Advanced Search</a>            
+            <a href="{{ url_dir + url_for('usage') }}">Manual</a>
+            <a href="{{ url_dir + url_for('method') }}">Method</a>
+            <a href="{{ url_dir + url_for('statistics') }}">Statistics</a>
+            <a href="{{ url_dir + url_for('faq') }}">FAQ</a>
+            <a href="{{ url_dir + url_for('refs') }}">References</a>
+            <a href="{{ url_dir + url_for('links') }}">Links</a>
+            <!--<a href="{{ url_dir + url_for('changelog') }}">Change Log</a>-->
+         </div>
+    </div>
+
+
+</div>
+
+<div id="content" class="ui-widget">
+{% block body %}
+
+{% endblock %}
+<div id="footer">
+<p style="color:gray; font-size:small;">
+  <a style="color:gray;" href="mailto:peter.hildebrand@charite.de">We are interested in your feedback</a>
+</p>
+</div>
+</div>
+
+
+
+<!-- Piwik -->
+
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://proteinformatics.charite.de/piwik/" : "http://proteinformatics.charite.de/piwik/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 3);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://proteinformatics.charite.de/piwik/piwik.php?idsite=3" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tag -->
+</body>
+</html>

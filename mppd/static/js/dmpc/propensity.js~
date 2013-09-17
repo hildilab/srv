@@ -1,0 +1,169 @@
+function mphd_load_data(id,uRl){
+
+  var foo = new Object();
+  $.ajax({
+    async: false,
+    url: uRl,
+    dataType: "json",
+    success: function(data) {
+      if (data.name == id) {
+        foo = data;
+      }
+    }
+  });
+  return foo;
+};
+
+function mphd_drawChart(prop, pr, cos, scale, title){
+  
+  var data = new google.visualization.DataTable();
+  data.addColumn('string', 'Propensity');
+//  var cols = [{"id":"","label":"Propensity","pattern":"","type":"string"}]
+
+  for (var i = 0; i < cos.length; i++){
+    data.addColumn({"id":"","label":"co:"+cos[i],"pattern":"","type":"number"});   
+   // data.addColumn({type: 'string', role:'tooltip'});   
+  }
+
+  //data.cols=
+
+
+  var row = new Array();
+  
+  var AA={'A': ('ALA', 'Alanine'), 'C': ('CYS', 'Cysteine'), 'E': ('GLU', 'Glutamic acid'), 'D': ('ASP', 'Aspartic acid'), 'G': ('GLY', 'Glycine'), 'F': ('PHE', 'Phenylalanine'), 'I': ('ILE', 'Isoleucine'), 'H': ('HIS', 'Histidine'), 'K': ('LYS', 'Lysine'), 'M': ('MET', 'Methionine'), 'L': ('LEU', 'Leucine'), 'N': ('ASN', 'Asparagine'), 'Q': ('GLN', 'Glutamine'), 'P': ('PRO', 'Proline'), 'S': ('SER', 'Serine'), 'R': ('ARG', 'Arginine'), 'T': ('THR', 'Threonine'), 'W': ('TRP', 'Tryptophan'), 'V': ('VAL', 'Valine'), 'Y': ('TYR', 'Tyrosine')};
+
+  for (var a = 0; a<AAs.length; a++){
+    row = [];
+    row.push(AA[AAs[a]]);
+  
+    for (var i = 0; i < cos.length; i++){
+      row.push(prop[pr][cos[i]][AAs[a]][scale]);  
+//      row.push(title + '(pr:' +pr+',co:'+cos[i]+'):\n'+AA[AAs[a]] + ": " + prop[pr][cos[i]][AAs[a]][scale]); 
+       
+    }
+    
+    data.addRow(row);
+  };
+//  alert(data.toJSON());
+  var options ={
+    width:700, height:300,
+    title:'Propensity scale of '+title+"(pr: "+pr+")",
+    vAxis:{title:'Propensity',viewWindowMode:'pretty'},
+    legend:{title: 'cut off distance',position:'top'},
+    areaOpacity: 0.5,
+    hAxis:{title:'Aminoacids', titleTextStyle:{color:'black'}
+    }
+  };
+  
+  var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+  chart.draw(data, options);
+  
+
+};
+
+
+function change_chart(change, id){
+
+  var cutoffs = document.getElementsByName("cutoff");
+  cos = new Array();
+  
+  
+  for (var i =0; i < cutoffs.length; i++){
+    if (cutoffs[i].checked){
+      cos.push(cutoffs[i].value);
+    }
+  }
+
+  if (cos =="")
+  {
+    document.getElementById(id).checked = true;
+    cos=[document.getElementById(id).value];
+  }
+
+  if (change == "pr"){
+    //document.getElementById("prSelect").value = id;
+  }
+  else if (change == "pdb"){
+    //document.getElementById("pdbSelect").value = id;
+    propset("prSelect", pdblist[id][0]);
+  }
+  else if (change == "family"){
+    //document.getElementById("familySelect").value = id;
+    //alert("family");
+    //propset("prSelect", pdblist[id][1]);
+  };
+
+  var scale  = document.getElementById("scaleSelect").value;
+  
+  var pr     = document.getElementById("prSelect").value;
+  var id     = document.getElementById("pdbSelect").value;
+
+  if ((pr == "") || (parseFloat(pdblist[id][0]) > parseFloat(pr) )){
+    document.getElementById("prSelect").value = pdblist[id][0];
+    pr = pdblist[id][0];
+  }
+
+  //if (pr != "" and pr != "0.0")
+  
+  var family = document.getElementById("familySelect").value;
+
+//  propset("prSelect", pdblist[id][0]);
+
+
+
+  var uRl = '/'+window.location.pathname.split('/')[1]+ '/jsons/propensity/'+id+'.prop'
+
+  var foo = mphd_load_data(id, uRl);
+
+  title = id;
+
+  mphd_drawChart(foo["data"][id], pr, cos, scale, title);
+  
+  if (change == "pdb"){
+    
+    ps = ["1.4","1.6","1.8","2.0","2.1","2.2","2.3","2.4","2.6","2.8"];    
+    cs = ["0.0","0.5","1.0","1.5","2.0","2.5","2.8"];
+    
+    cTable.fnClearTable();
+    current_rows = new Array();
+    var rw = new Array();
+    var rws = new Array();
+
+    for (var p = 0; p < ps.length; p++){
+
+      if (parseFloat(pdblist[id][0]) <= parseFloat(ps[p]) ){
+        
+        for (var c = 0; c < cs.length; c++){  
+          rw = [];
+          rw.push(ps[p]);
+          rw.push(cs[c]);
+          
+          for (var a = 0; a<AAs.length; a++){
+           rw.push(foo["data"][id][ps[p]][cs[c]][AAs[a]][scale]);  
+          }
+
+          rws.push(rw);
+          
+        }
+      }
+
+    }
+    
+    cTable.fnAddData(rws);  
+  }
+
+
+
+  var f = document.getElementById("familySelect");
+  var i = f.length - 1;
+  f.options[0].selected = false;
+  f.options[0].defaultSelected = false;
+  while (i > 0){
+    if (f.options[i].value == pdblist[id][1]){
+      f.options[i].selected = true;
+      f.options[i].defaultSelected = true;
+      i = 0;
+    };
+    i--;
+  };
+};

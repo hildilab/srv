@@ -1,0 +1,57 @@
+function fnShowHide(iCol){
+      /* Get the DataTables object again - this is not a recreation, just a get of the object */
+      var oTable = $('#example').dataTable();
+      var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+      oTable.fnSetColumnVis(iCol, bVis ? false : true);
+   }
+;
+   var aSelected = [];
+   $(document).ready(function (){
+      $('#dynamic2').html('<table cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="example2"></table>');
+      eTable = $('#example2').dataTable({
+        "sDom":'<"H"<"toolbar">f<"clear">lCr<"clear"><ip>><rt><"F"ifl<p><"clear">><"clear">', /*'<"top" C<"clear"> ifl<"clear"><p><"clear">> ,rt,<"bottom"ifl<p><"clear">>T',*/
+                                           /*"sDom": 'C<"clear">lfrtip',*/
+        "aaData":bwrows,
+        "aoColumnDefs": def_propensity_column,
+        "asStripClasses":[ 'aminoA odd small', 'aminoA even small' ],
+        "sScrollX":"100%",
+        "bScrollCollapse":true,
+        "bJQueryUI":true,
+        "sPaginationType":"full_numbers",
+        "oColVis":{
+            "buttonText":"Change columns",
+            "aiExclude":[ 0, 1 ],
+            "iOverlayFade":100,
+            "bRestore":true,
+            "sRestore":"Undo"
+         },
+         "oLanguage":{
+            "sSearch":"Search all columns:",
+         },
+         "fnRowCallback":function (nRow, aData, iDisplayIndex){
+            if (jQuery.inArray(aData.DT_RowId, aSelected) !== -1){
+               $(nRow).addClass('row_selected');
+            }
+            return nRow;
+         },
+         "bRetrieve":true,
+         "bDestroy":true
+      });
+      $("div.toolbar").html('<input value=\"BW scales\" type=\"button\" onclick=\"eTable.fnClearTable();eTable.fnAddData(bwrows);\"><input value=\"TMLIP1 scales\" type=\"button\" onclick=\"eTable.fnClearTable();eTable.fnAddData(t1rows);\"><input value=\"TMLIP2 scales\" type=\"button\" onclick=\"eTable.fnClearTable();eTable.fnAddData(t2rows);\">');
+      /*
+       <input value="TMLIP1 scales" type="button" onclick="eTable.fnClearTable();eTable.fnAddData(t1rows);">
+       <input value="TMLIP2 scales" type="button" onclick="eTable.fnClearTable();eTable.fnAddData(t2rows);">');*/
+      new FixedColumns($('#example2').dataTable(),{"iLeftColumns":1,
+         "iLeftColumns":2});
+      /* Click event handler */
+      $('#example2 tbody tr').live('click', function (){
+         var id = this.id;
+         var index = jQuery.inArray(id, aSelected);
+         if (index === -1){
+            aSelected.push(id);
+         }else{
+            aSelected.splice(index, 1);
+         }
+         $(this).toggleClass('row_selected');
+      });
+   });

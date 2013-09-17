@@ -1,0 +1,273 @@
+{% extends "MPPD_layout.html" %}
+{%block title%}Results{%endblock%}
+{%block head%}
+<link rel="stylesheet" media="screen" type="text/css" href="{{url_dir + url_for('statisch',filename='js/DataTables/extras/ColVis/media/css/ColVis.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{url_dir + url_for('statisch',filename='js/DataTables/media/css/demo_table_jui.css')}}">
+<link rel="stylesheet" media="screen" type="text/css" href="{{url_dir + url_for('statisch',filename='js/jquery-tooltip/jquery.tooltip.css')}}">
+
+
+<!--test-->
+<script type="text/javascript" src="{{url_dir + url_for('statisch', filename='js/jquery.min.js')}}"></script>
+<script type="text/javascript" src="{{url_dir + url_for('statisch', filename='js/DataTables/media/js/jquery.dataTables.js')}}"></script>
+<script type="text/javascript" src="{{url_dir + url_for('statisch', filename='js/DataTables/extras/FixedColumns/media/js/FixedColumns.js')}}"></script>
+<script type="text/javascript" src="{{url_dir + url_for('statisch', filename='js/DataTables/extras/ColVis/media/js/ColVis.min.js')}}"></script>
+
+<script type="text/javascript" src="{{url_dir + url_for('statisch', filename='js/jquery-tooltip/jquery.tooltip.min.js')}}"></script>
+<script type="text/javascript" src="{{url_dir + url_for('statisch', filename='js/DataTables/extras/FixedHeader/js/FixedHeader.min.js')}}"></script>
+
+
+<script type="text/javascript" src="{{url_dir + url_for('statisch', filename='js/dmpc/results.js')}}"></script>
+
+<script type="text/javascript" src="{{url_dir + url_for('statisch', filename='js/table2CSV.js')}}"></script>
+
+<script type="text/javascript">
+   
+
+var pdb_table={{pdb_table|tojson|safe}}
+var tbs        = new Array();
+for (var x in pdb_table){
+  var pdb = x;
+  var entry = new Array();
+
+  entry.push(
+    "<nobr>"+
+      "<span value=\'"+pdb+"\' name=\"pdblist[]\" style=\'display:inline-block;width:35px;\'>"+pdb+"</span>"+
+      "<span id=\'provi\' title=\'External link to Provi\' >&nbsp;"+
+        "<a href=\'{{provi_url}}?dir=mppd&file="+pdb+"/mppd.provi\' target=\'_blank\'>View</a>"+
+      "</span>"+
+      "<span id='download' title=\'Download data set\'>&nbsp;<a href=\'{{url_dir + url_for('download', pdb_id='')}}"+pdb+"\' target=\'_blank\' >Download</a></span>"+
+      "<span id='rcsb' title=\'External link to RCSB PDB\'>&nbsp;<a href=\'http://www.rcsb.org/pdb/explore/explore.do?structureId="+pdb+"\' target=\'_blank\' >PDB</a></span>"+
+    "</nobr>"
+  );
+  entry.push("<span id=\'fancy\' title=\'"+pdb_table[x]['EXPDTA']+"\'>"+pdb_table[x]['EXPDTA']+"</span>");
+  entry.push("<span id=\'fancy\' title=\'"+pdb_table[x]['SWfamily']+"\'><nobr>"+ pdb_table[x]['OPMFamily'].slice(0,39) + "</nobr></span>");
+  entry.push("<span id=\'fancy\' name=\"resol\" value=\"abc\" title=\'"+parseFloat(pdb_table[x]['RESOLUTION']).toFixed(2)+"\'><nobr>"+ parseFloat(pdb_table[x]['RESOLUTION']).toFixed(2) + "</nobr></span>");
+  entry.push('<input type=\'checkbox\' name=\'pdblist[]\' value=\''+pdb+'\' onchange=\'document.getElementById( \"'+'id'+pdb+'\").innerHTML=this.checked + \" '+pdb+'[]\";\' checked ><span id=\"id'+pdb+'\" style=\"display:none\">'+pdb+' true</span>');
+  tbs.push(entry);
+}
+
+/*
+for (var x in niDMPC){
+  var pdb = niDMPC[x];
+  notindmpc.push([pdb, restable[pdb]['comment']+'&nbsp;']);   
+}
+*/
+$(document).ready(function (){
+  
+  if (tbs.length > 0)
+  {
+    
+    $('#dmpcResult').html('<div id="exactMatches" style="position:relative; top:-185px;visibility:hidden;"></div><table cellpadding="0" cellspacing="0" border="0" class="display dataTable" id="dmpcResultTable"></table><br><br>');
+      
+    var footer = document.getElementById('dmpcResultTable').createTFoot();
+
+    var rData= fill_table(tbs);
+
+    var row = footer.insertRow(0);
+
+    
+    for (var x = rData["aoColumnDefs"].length-1 ; x > -1; x--){
+      var cell = row.insertCell(0);
+      try{cell.innerHTML = rData["aoColumnDefs"][x]["sTitle"];
+      cell.className = rData["aoColumnDefs"][x]["sClass"]+" center";}
+      catch(err){}
+    }
+
+
+    var rTable = $('#dmpcResultTable').dataTable(rData);
+    
+    $('#dmpcResult thead tr th').each( function() {
+      var sTitle;
+      var nTds = $(this);
+      var cell = nTds.text();
+     
+     // alert(nTds.text());
+      switch($(nTds).text()){
+        case "nor":        sTitle = "relative protein number";
+                           break;
+        case "pdbid":      sTitle = "RCSB PDB ID";
+                           break;
+        case "method":     sTitle = "structure determination method";
+                           break;
+        case "family":     sTitle = "structure family";
+                           break;
+        case "prpy":       sTitle = "check for propensity calculation";
+                           break;
+        case "res":        sTitle = "structure resolution";
+                           break;
+        case "hb":         sTitle = "possible hydrogen bonds";
+                           break;
+        case "ih":         sTitle = "interhelical distances and crossing angles";
+                           break;
+        case "mpr":        sTitle = "minimum probe-radius";
+                           break;
+        case "qpr":        sTitle = "wanted probe-radius";
+                           break;
+        case "cp":         sTitle = "select for propensity calculation";
+                           break;
+        default:           sTitle = "select for download";
+                           break;
+      }
+      this.setAttribute( 'title', sTitle );
+
+
+    } );
+
+    $('#dmpcResult thead tr th').tooltip( {
+        "delay": 0,
+        "track": true,
+        "fade": 250
+    } );
+
+    $('#dmpcResult tfoot tr td').each( function() {
+      var sTitle;
+      var nTds = $(this);
+      var cell = nTds.text();
+     
+     // alert(nTds.text());
+      switch($(nTds).text()){
+        case "nor":        sTitle = "relative protein number";
+                           break;
+        case "pdbid":      sTitle = "RCSB PDB ID";
+                           break;
+        case "method":     sTitle = "structure determination method";
+                           break;
+        case "family":     sTitle = "structure family";
+                           break;
+        case "prpy":       sTitle = "check for propensity calculation";
+                           break;
+        case "res":        sTitle = "structure resolution";
+                           break;
+        case "hb":         sTitle = "possible hydrogen bonds";
+                           break;
+        case "ih":         sTitle = "interhelical distances and crossing angles";
+                           break;
+        case "mpr":        sTitle = "minimum probe-radius";
+                           break;
+        case "qpr":        sTitle = "wanted probe-radius";
+                           break;
+        case "cp":         sTitle = "select for propensity calculation";
+                           break;
+        default:           sTitle = "cuto-off distance "+$(nTds).text();
+                           break;
+      }
+      this.setAttribute( 'title', sTitle );
+
+
+    } );
+
+    $('#dmpcResult tfoot tr td').tooltip( {
+        "delay": 0,
+        "track": true,
+        "fade": 250
+    } );  
+
+  }
+  else{
+    $('#dmpcResult').html("<h3>No data found.</h3>");
+  }
+});
+
+function openRTable(){
+  var tmp= $('#dmpcResultTable').dataTable().fnSettings()._iDisplayLength;
+  $('#dmpcResultTable').dataTable().fnSettings()._iDisplayLength=-1;
+  $('#dmpcResultTable').dataTable().fnDraw();
+  return tmp
+}
+
+function closeRTable(tmp){
+  $('#dmpcResultTable').dataTable().fnSettings()._iDisplayLength=tmp;
+  $('#dmpcResultTable').dataTable().fnDraw();
+}
+
+function getchecked(elem){
+  /*var x=document.getElementsByName(elem);
+  checked=new String();
+  count=0;
+  for (var i=0; i < x.length; i++) {
+                if (x[i].checked == true) {
+                    checked+='&'+count+'='+(x[i].value.substring(0,4));
+                    count++;
+                } ;
+  };*/
+
+  var checked=new String();
+  var tmp= $('#dmpcResultTable').dataTable().fnSettings()._iDisplayLength;
+  $('#dmpcResultTable').dataTable().fnSettings()._iDisplayLength=-1;
+  $('#dmpcResultTable').dataTable().fnDraw();
+  count=0;
+  $("#calcprop:checked", $('#dmpcResultTable').dataTable().fnGetNodes()).each(function(){
+    //checked2.push($(this).val());
+    checked+='&'+count+'='+($(this).val());
+    count++;
+  });
+  $('#dmpcResultTable').dataTable().fnSettings()._iDisplayLength=tmp;
+  $('#dmpcResultTable').dataTable().fnDraw();
+  
+
+  return checked;
+
+}
+
+</script>
+{% endblock %}
+{% block body %}
+
+
+
+
+
+
+   <h2>
+      Search Results:
+   </h2>
+
+        <div class="line">
+{% if not pdb_table == {} %}
+
+           
+           <div style="display:none">
+              <!--necessary for 'sel_dl'-site--> 
+              <input name="status" value='{{status}}'>
+              <input name="key" value='{{key}}'>
+              <input name="complete" value='cpl'>
+              <input name="filelist" value="fl">
+              <input name="tmpdir"   value="folder">
+              
+              <input name="varsCO"   value="a">
+              
+
+           </div>
+
+           <span class="center">&nbsp;<br>&nbsp;</span>
+
+
+{% else %}
+           <span class="left">
+              download not available: no data found<br><br>
+              
+           </span>
+           <span class="center">&nbsp;<br>&nbsp;</span>
+{% endif %}
+
+
+        </div>
+
+<div style="overflow:auto">      
+<div id="dmpcResult"><h3>I load just the result table...<br><br></h3></div>
+<div>
+<div id="dmpcAlternatives"></div>
+
+<div id="dmpcNotFound"></div>    
+<div id="exactMatchesDescription"></div>
+<div id="sequenceSimilarMatchesDescription"></div>
+<div id="notIncludedDescription"></div>
+
+
+
+
+
+<!-- not normal-->
+
+
+{% endblock %}

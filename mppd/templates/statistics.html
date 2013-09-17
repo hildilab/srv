@@ -1,0 +1,26 @@
+{% extends "MPPD_layout.html" %}
+{% block title %}General statistics{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_dir + url_for('statisch',filename='tooltip.css')}}">
+{% endblock %}
+
+{% block body %}
+<div>
+    <a name="statistics"><h2>Statistics<oben></oben></h2></a>
+
+    <img src="{{url_dir+url_for('images', filename='h2o_per_100_res_labeled.png')}}" style="padding-top:10px;padding-bottom:15px;"/>
+    <div>Number of internal water molecules per 100 residues for three datasets: experimentally derived, calculated with DOWSER and a combined dataset as described in <a href="{{ url_dir + url_for('method') }}">methods</a>. The errorbars show the standard deviation.</div>
+    <br/><br/><br/>
+
+
+    <img src="{{url_dir+url_for('images', filename='org_TM_h2o_res.png')}}" style="padding-top:10px;padding-bottom:15px;width:600px;"/>
+    <div>Scatterplot showing the relation between the number of water molecules per residue and the experimental resolution of the structure. Here shown is the data for experimentally derived internal water molecules, excluding structures without any water molecules. The inset gives the Pearson's r values and the associated p-value.</div>
+    <br/><br/><br/>
+
+
+    <img src="{{url_dir+url_for('images', filename='dow_TM_h2o_res.png')}}" style="padding-top:10px;padding-bottom:15px;width:600px;"/>
+    <div>Scatterplot showing the relation between the number of water molecules per residue and the experimental resolution of the structure. Here shown is the data for internal water molecules calculated with DOWSER, excluding structures without any water molecules. The inset gives the Pearson's r values and the associated p-value.</div>
+    <br/><br/><br/>
+
+</div>
+{%endblock%}

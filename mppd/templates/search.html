@@ -1,0 +1,397 @@
+{% extends "MPPD_layout.html" %}
+{% block title %}Search{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_dir + url_for('statisch', filename='posabsolute-jQuery-Validation-Engine-53a0ac0/css/validationEngine.jquery.css') }}" type="text/css"/>
+
+<!--
+<link rel="stylesheet" href="{{ url_dir + url_for('statisch', filename='posabsolute-jQuery-Validation-Engine-53a0ac0/css/template.css') }}" type="text/css"/>
+-->
+
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='posabsolute-jQuery-Validation-Engine-53a0ac0/js/languages/jquery.validationEngine-en.js') }}"></script>
+<script src="{{ url_dir + url_for('statisch', filename='posabsolute-jQuery-Validation-Engine-53a0ac0/js/jquery.validationEngine.js') }}" type="text/javascript"></script>
+<!--
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='js/lib/jquery.js') }}"></script>
+-->
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='js/jquery-ui/js/jquery-ui.min.js') }}"></script>
+
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='js/jquery.query.js') }}"></script>
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='js/jquery.metadata.2.1/jquery.metadata.js') }}"></script>
+
+<link rel="stylesheet" type="text/css" href="{{ url_dir + url_for('statisch',filename='tooltip.css')}}">
+
+<script type="text/javascript" src="{{ url_dir + url_for('statisch', filename='js/script.js') }}"></script>
+
+<script type="text/javascript">
+    jQuery(function(){
+        var ref = $.query.get('ref');
+        if( ref ){
+            $('#ref_highlight_info').show();
+            $('#'+ref).addClass('highlight');
+        }
+    });
+    
+
+    jQuery(function(){
+        $('#params_tabs').tabs();
+        $('#params_tabs').children().removeClass('ui-corner-all');
+        $('#params_tabs').removeClass('ui-corner-all');
+        update_search( $.query.get('search') );
+        $('#search_mode a.js').click( function(event){
+            event.preventDefault();
+            update_search( $(this).attr('title') );
+            
+        });
+    
+    });
+</script>
+
+<script>
+    jQuery(document).ready(function(){
+      // binds form submission and fields to the validation engine
+      jQuery("#formID").validationEngine();
+      //jQuery("#formID2").validationEngine();
+
+    });
+    
+    /**
+    *
+    * @param {jqObject} the field where the validation applies6
+    * @param {Array[String]} validation rules for this field
+    * @param {int} rule index
+    * @param {Map} form options
+    * @return an error string if validation failed
+    */
+    function changeSearch(value){
+        document.getElementById('masterSearch').style.visibility='hidden';
+        //$('#formID').style.visibility='hidden';
+        $('#formID').submit(function(){
+          $('input[type=submit]', this).attr(value, value);
+          
+        });
+    }
+
+    function checkVals(){
+
+      var field=document.main.elements['family[]'];
+      var allok=0;
+
+      for (i = 0; i < field.length; i++) 
+      {
+         if (field[i].checked == true){
+           allok+=1;
+           break;
+         }
+
+      }
+
+      var field=document.main.elements['methods[]'];
+      for (i = 0; i < field.length; i++) 
+      {
+         if (field[i].checked == true){
+           allok+=1;
+           break;
+         }
+
+      }
+
+      var minres = parseFloat(document.getElementById('minres').value);
+      var maxres = parseFloat(document.getElementById('maxres').value);
+      if ((minres >=0.0) && (maxres >minres) ){
+        allok+=1;
+      }
+      if (allok==3){
+        document.getElementById('masterSearch').style.visibility='visible';
+      }
+    }
+
+    function checkFamily(){
+      var field=document.main.elements['family[]'];
+      var okk=false;
+      for (i = 0; i < field.length; i++) 
+      {
+         if (field[i].checked == true ){
+           okk=true;
+         }
+      }
+      if (okk== true){
+        $('#formID2').validationEngine('hide');
+      }
+
+    }
+
+    function checkSELECT(field, rules, i, options){
+      //alert('check');
+      $('#formID2').submit(function(){
+          $('input[type=submit]', this).removeAttr('disabled');
+          
+          //$('#formID').style.visibility='visible';
+      });
+      
+      var least=false;
+      for (i = 0; i < field.length; i++) 
+      {
+         if (field[i].checked == true){least=true;}
+      }       
+      if (least == false){
+        changeSearch('disabled');
+        return "select at least one"
+      }
+      else{document.getElementById('masterSearch').style.visibility='visible';}
+    }
+
+    function famtest(field,rules, i, options){
+      
+      var field = document.main.elements['family[]'];
+      var least=false;
+      for (i = 0; i < field.length; i++) 
+      {
+         if (field[i].checked == true){least=true;}
+      }       
+      if (least == false){
+        changeSearch('disabled');
+        return "Select at least one family."
+
+      }
+      else{
+        $('#formID2').validationEngine('hide');
+        $('#formID4').validationEngine('hide');
+      }
+    }
+
+    function mettest(field,rules, i, options){
+      
+      var field = document.main.elements['methods[]'];
+      var least=false;
+      for (i = 0; i < field.length; i++) 
+      {
+         if (field[i].checked == true){least=true;}
+      }       
+      if (least == false){
+        changeSearch('disabled');
+        return "Select at least one Method."
+      }
+      else{
+        $('#formID3').validationEngine('hide');
+        document.getElementById('masterSearch').style.visibility='visible';
+      }
+    }
+
+    function checkMPR(field, rules, i, options){
+ /*     $('#formID').submit(function(){
+          $('input[type=submit]', this).removeAttr('disabled');
+          
+          //$('#formID').style.visibility='visible';
+      });
+*/
+
+      var minres = parseFloat(document.getElementById('minres').value);
+      var maxres = parseFloat(document.getElementById('maxres').value);
+
+      if (field.val() == "0.0"){}
+      else if (field.val() == "0"){document.getElementById('masterSearch').style.visibility='visible'}
+      
+      else if (field.val() == "42"){
+        changeSearch('disabled');
+        return "Answer to the Ultimate Question of Life, the Universe, and Everything"
+      }
+      else if (field.val() == "23"){
+        changeSearch('disabled');
+        return "synchronicity principle"
+      }
+      else if (!parseFloat(field.val())){
+        changeSearch('disabled');
+        return options.allrules.resvalidate.alertText;
+      }
+      else if (parseFloat(field.val()) < parseFloat(0)) {
+        changeSearch('disabled');
+        return options.allrules.minresvalidate.alertText;
+      }
+      /*else if (parseFloat(field.val()) > 3.5) {
+        changeSearch('disabled');
+        return options.allrules.maxresvalidate.alertText;
+      }*/
+      else if (minres > maxres)
+      {
+        changeSearch('disabled');
+        return "Error: minimum resolution > maximum resoltuion"
+      }
+      else{
+        document.getElementById('masterSearch').style.visibility='visible';
+      }
+    }
+
+</script>
+{% endblock %}
+{% block body %}
+
+
+  <h2 id="simple_search_title">Database Search</h2>
+  <h2 id="advanced_search_title" style="display:none">Advanced Database Search</h2>
+
+  <form action="{{ url_dir + url_for('go') }}" name ="main" id="formID" class="formular" method="post">
+
+    <div id="simple_search" class="ui-widget ui-widget-content">
+            <table width="100%"  cellpadding="0" cellspacing="0" id="titlebox"  border= "0" style="searchTable" bgcolor="white"> 
+                   <tr> 
+                       <!--<form action="" onsubmit="return results targetdata;" method="get" name="SearchQueryForm" id="SearchQueryForm">--> 
+                       <td> 
+                          <div id ="titleright" style="text-align:left;font-size: 1.0em;line-height: 1.25;color:#377BA8;"> 
+                          <select name="searchType" id="searchType" onchange="updateSearch()"> 
+                             <option value="PDBs" selected="selected">PDB ID</option> 
+                             <option value="Keywords">Keywords</option>
+<!-- changed to family                             <option value="Type">Type</option>--> 
+                             <option value="Family">Family</option>
+                          </select> 
+                          </div> 
+                       </td> 
+                       <td> 
+                          <div style="font-size: 1.0em;line-height: 1.25;color:#377BA8; display:none;" id="typeSelectspan"> 
+                          <select name="typeSelect" id="typeSelect" onchange="checkTypeSelection();"  style="width: 400px; "> 
+                             <option value="" style=" color: rgb(178, 173, 173);">--please select--</option> 
+ 
+                             <option value="coil" >Coils</option> 
+                             <option value="channel">Channels</option> 
+                             <option value="gpcr">GPCRS</option> 
+                             <option value="unknown">Unknown</option> 
+                             <option value="...">...</option> 
+                          </select> 
+                          </div> 
+                          
+                          <div style="font-size: 1.0em;line-height: 1.25;color:#377BA8; display:none;" id="familySelectspan">
+                          <select name="familySelect" id="familySelect" onchange="checkFamilySelection();"  style="width: 400px; ">
+                             <option value="" style=" color: rgb(178, 173, 173);">--please select--</option>
+                             <option value="select all" >select all</option>
+                             <!--
+                             <option value="channels only" >channels only</option>
+                             <option value="coils only" >coils only</option>
+                             -->
+                            {% for swfamily in svalues['SWfamily'] %}
+                           <option value="{{swfamily}}" >{{swfamily|safe }}</option>
+                            {% endfor %}
+                           <option value="no class" >no class</option>
+                          </select>
+                          </div>
+ 
+                          <div style="font-size: 1.1em;line-height: 1.25;color:#377BA8;display:block;" id="divPDBIDsText"> 
+                             <input name=pdbids onkeypress="return isAKey(event)" onFocus='this.style.color="#000000";if(this.value=="Enter PDB ID(s), e.g. 1u19,2nwx,3ag2" )  {this.value=""};' onblur='if(this.value==""){this.value="Enter PDB ID(s), e.g. 1u19,2nwx,3ag2";this.style.color="rgb(178, 173, 173)";} else {this.style.color="#000000";}' type="text" value="Enter PDB ID(s), e.g. 1u19,2nwx,3ag2" id="textSelect" style="width: 400px; color: rgb(178, 173, 173); "> 
+                          </div> 
+                          <div style="font-size: 1.1em;line-height: 1.25;color:#377BA8;display:none;" id="divKeywordsText"> 
+                             <input onkeypress="return isAKey(event)" name=keywds onFocus='this.style.color="#000000";if(this.value=="PDB Keyword(s), e.g. transporter, kinase" )  this.value="";' onblur='if(this.value==""){this.value="PDB Keyword(s), e.g. transporter, kinase";this.style.color="rgb(178, 173, 173)";} else {this.style.color="#000000";}' type="text" value="PDB Keyword(s), e.g. transporter, kinase" id="textSelect2" style="width: 400px; color: rgb(178, 173, 173);"> 
+                          </div> 
+                       </td> 
+                       <td align="left" > 
+                          <div> 
+                             <input type="submit" size="60" value="Search"  align="middle" id ="masterSearch" name="masterSearch" title="Search"> 
+                          </div> 
+                       </td> 
+                   </tr> 
+                </table> 
+        </div>
+        
+ <div id="advanced_search" >
+        
+            <div id="params_tabs">
+                <ul>
+                    <li><a href="#search_params"><span>Search Parameters</span></a></li>
+                </ul>
+                <div id="search_params">
+                    <p>
+ 
+    <fieldset>
+      <legend>
+      <h3>
+        Experimental Methods
+      </h3>
+      </legend>
+      <table>
+      <tr>
+      <td>
+                      <span id="methodson"  style="display:none;"><a href="#" onclick="jQuery('#formID3').validationEngine('hide');displayChange('methodson','methodsoff');checkz('1', 'methods[]');checkVals();">select all</a> </span> 
+                <span id="methodsoff" style="display:block"><a href="#" onclick="displayChange('methodson','methodsoff');checkz('0', 'methods[]'); jQuery('#formID3').validationEngine('showPrompt', 'Select at least one Method.', 'error', 'pass');changeSearch('disabled');">deselect all</a></span>
+      </td><td><span id="formID3"></span></td>
+      </tr>
+      
+
+      {% for m in range(0,lmethods)%}
+      
+      <td>
+      <label>
+        <input type=checkbox name=methods[] value="{{svalues['EXPDTA'][m]}}" checked=checked class="validate[minFamilybox[1],funcCall[mettest]] checkbox" onClick="checkVals();" >
+        {{svalues['EXPDTA'][m]}}
+        <br/>
+      </label>
+      </td>
+      {% if (m+1)%3 == 0%}
+      </tr><tr>
+      {% endif %}
+      
+      {% endfor %}
+      
+      </tr>
+      </table>
+    </fieldset>
+
+<br>
+
+    <fieldset>
+      <legend>
+        <h3>
+          Structure Resolution
+        </h3>
+      </legend>
+      <table>
+      <tr>
+      <td>
+      <label>
+        <span>Minimum </span>
+        <input style="width: 60px;" value="0.0" class="validate[required,funcCall[checkMPR]] text-input" type="float" id="minres" name="minres" onkeypress="return isFloatKey(event, this.form.minres);checkVals();" />
+        <br/>
+      </label>
+      </td>
+      <td>
+      <label>
+        <span>Maximum </span>
+        <input style="width: 60px;" value="{{svalues['maxres']}}" class="validate[required,funcCall[checkMPR]] text-input" type="float" id="maxres" name="maxres" onkeypress="return isFloatKey(event, this.form.maxres);checkVals();" />
+        <br/>
+      </label>
+      </td>
+      </tr>
+      </table>
+    </fieldset>
+
+    <br>
+    <fieldset>
+      <legend>
+      <h3>
+        Families
+      </h3>
+      </legend>
+      <table>
+      <tr>
+      <td>
+      
+      </td><td><div>
+                <input type=checkbox name=family[] value="tmpvalue" checked="checked" class="validate[minFamilybox[1],funcCall[famtest]] checkbox" onclick="checkz(this.checked, 'family[]'); checkVals();"></td></div>
+      </tr>
+      <tr>
+      {% for swfamily in svalues['SWfamily'] %}
+            <tr>
+              <td>{{swfamily|safe}}</td>
+              <td><input type=checkbox name=family[] value="{{swfamily}}" checked="checked" class="validate[minFamilybox[1],funcCall[famtest]] checkbox" onclick="checkVals();">
+                {%if x == 0%}
+                <span id="formID2"></span>
+                {%endif%}</td>
+            </tr>
+      {% endfor %}
+
+      </table>
+    </fieldset>
+
+
+        
+        
+    </form>
+
+
+{% endblock %}
