@@ -19,6 +19,7 @@ import tempfile
 import zipfile
 import sqlite3
 import uuid
+import json
 
 from flask import (
     Flask, request, session, render_template, 
@@ -76,7 +77,7 @@ def get_nop(config):
 
 
 
-def read_entries(config, request, paras):
+def read_entries(config, request, paras, table=False):
     # TODO make safe!!!
     expdta = frozenset( paras['EXPDTA'] )
     swfamily = frozenset( paras['SWfamily'] )
@@ -155,29 +156,160 @@ def read_entries(config, request, paras):
     else:
         where = ""
 
+    start = int( request.args.get('start', 0) )
+    limit = int( request.args.get('limit', 0) )
+    limit_clause = "LIMIT %i, %i" % ( start, limit) if limit else ""
+
     query = (
         "SELECT DISTINCT "
             "PDBID, EXPDTA, RESOLUTION, SWfamily, OPMFamily, OPMSpecies "
         "FROM mppddbrecord "
         "" + where + " "
         "ORDER by PDBID"
+        " " + limit_clause + ""
     )
 
     print query
     
-    pdb_table = {}
-    with sqlite3.connect( config['DATABASE'] ) as conn:
-        c = conn.cursor()
-        for row in c.execute( query ):
-            pdb_table[row[0]] = {
-                'EXPDTA':row[1], 'RESOLUTION': row[2], 
-                'SWfamily': row[3], 
-                'OPMFamily':row[4], 'OPMSpecies': row[5]
-            }
+    if table:
+        pdb_table = []
+        with sqlite3.connect( config['DATABASE'] ) as conn:
+            c = conn.cursor()
+            for row in c.execute( query ):
+                pdb_table.append( row )
+    else:
+        pdb_table = {}
+        with sqlite3.connect( config['DATABASE'] ) as conn:
+            c = conn.cursor()
+            for row in c.execute( query ):
+                pdb_table[row[0]] = {
+                    'EXPDTA':row[1], 
+                    'RESOLUTION': row[2], 
+                    'SWfamily': row[3], 
+                    'OPMFamily':row[4], 
+                    'OPMSpecies': row[5]
+                }
    
     return pdb_table
 
+def read_entries2(config, request, paras, table=False):
+    # TODO make safe!!!
+    expdta = frozenset( paras['EXPDTA'] )
+    swfamily = frozenset( paras['SWfamily'] )
+    nmr_methods = frozenset([
+        'FIBER DIFFRACTION', 'SOLUTION NMR', 'SOLID-STATE NMR',
+        'SOLUTION NMR; SOLID-STATE NMR', 'FIBER DIFFRACTION; SOLID-STATE NMR'
+    ])
 
+    methods = frozenset( request.form.getlist('methods[]') )
+    minres = request.form.get('minres')
+    maxres = request.form.get('maxres')
+    family  = request.form.getlist('family[]')
+    try: family.remove("tmpvalue")
+    except: pass
+    family = frozenset( family )
+    pdbids = request.form.get('pdbids')
+    if pdbids:
+        if pdbids.startswith("Enter PDB ID(s)"):
+            pdbids = None
+        else:
+            pdbids = re.split( "[\s,]+", pdbids )
+    keywds = request.args.get('keywds')
+    if keywds:
+        if keywds.startswith("PDB Keyword"):
+            keywds = None
+        else:
+            keywds = re.split( "[\s,]+", keywds.upper() )
+   
+    where = []
+
+    if minres and maxres:
+        res_where = "( CAST(RESOLUTION as FLOAT) BETWEEN %s AND %s)" % ( minres, maxres )
+    elif minres:
+        res_where = "CAST(RESOLUTION as FLOAT) >= %s" % minres
+    elif maxres:
+        res_where = "CAST(RESOLUTION as FLOAT) <= %s" % maxres
+    else:
+        res_where = ""
+
+    if res_where:
+        if nmr_methods.intersection( methods ):
+            res_where += " or (RESOLUTION=\'NULL\' or RESOLUTION=\'NOT\')"
+        where.append( res_where )
+
+    if methods and methods!=expdta:
+        where.append( 
+            " OR ".join([ "EXPDTA = \'%s\'" % x for x in methods ])
+        )
+
+    if family and family!=swfamily:
+        where.append( 
+            " OR ".join([ "SWfamily = \'%s\'" % x for x in family ])
+        )
+
+    if keywds:
+        print keywds
+        pdbids = [ x for x in keywds if len(x)==4 ]
+        print pdbids
+
+    if pdbids:
+        where.append( 
+            " OR ".join([ 
+                "PDBID = \'%s\' COLLATE NOCASE" % x for x in pdbids 
+            ])
+        )
+   
+    if keywds:
+        where.append( 
+            " OR ".join([ 
+                (   
+                    "KEYWDS like \'%%%s%%\' COLLATE NOCASE OR "
+                    "SWfamily like \'%%%s%%\' COLLATE NOCASE OR "
+                    "OPMFamily like \'%%%s%%\' COLLATE NOCASE"
+                ) % ( x, x, x ) 
+                for x in keywds 
+            ])
+        )
+    
+    if where:
+        where = "WHERE (" + ( ") OR (".join( where ) ) + ")"
+    else:
+        where = ""
+
+    sortby = request.args.get('sortby', 'PDBID')
+    direction = request.args.get('dir', 'ASC')
+    order_clause = "ORDER BY %s %s" % ( sortby, direction )
+
+    start = int( request.args.get('start', 0) )
+    limit = int( request.args.get('limit', 0) )
+    limit_clause = "LIMIT %i, %i" % ( start, limit) if limit else ""
+
+    query = (
+        "SELECT DISTINCT "
+            "PDBID, EXPDTA, RESOLUTION, SWfamily, OPMFamily, OPMSpecies "
+        "FROM mppddbrecord "
+        "" + where + ""
+        " " + order_clause + ""
+        " " + limit_clause + ""
+    )
+    query_count = (
+        "SELECT DISTINCT COUNT(*) "
+        "FROM mppddbrecord "
+        "" + where + ""
+    )
+
+    print query
+    
+    pdb_table = []
+    with sqlite3.connect( config['DATABASE'] ) as conn:
+        c = conn.cursor()
+        for row in c.execute( query ):
+            pdb_table.append( row )
+   
+        c.execute( query_count )
+        count = c.fetchone()[0]
+
+    return count, pdb_table
 
 
 
@@ -217,6 +349,20 @@ def search():
         'search.html', svalues=paras, lmethods=len(paras['EXPDTA'])
     )
 
+@app.route('/query', methods=['POST','GET'])
+def query():
+    count, pdb_table = read_entries2( 
+        app.config, request, paras, table=True
+    )
+    return json.dumps({
+        "start": int( request.args.get('start', 0) ),
+        "hits": count,
+        "results": pdb_table
+    })
+
+@app.route('/grid/')
+def grid():
+    return render_template2( 'grid.html' )
 
 @app.route('/refs/')
 def refs():
