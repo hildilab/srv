@@ -20,13 +20,34 @@
     function init() {
     }
 
+    /*"pdb_id", "pdb_title", "pdb_keywords", "pdb_experiment", "pdb_resolution",
+    "opm_superfamily", "opm_family", "opm_representative",
+    "mpstruc_group", "mpstruc_subgroup", "mpstruc_name"*/
+
     function DataItem( row ) {
-      this.pdbid = row[0];
-      this.EXPDTA = row[1];
-      this.RESOLUTION = row[2];
-      this.SWfamily = row[3];
-      this.OPMFamily = row[4];
-      this.OPMSpecies = row[5];
+      this.pdb_id = row[0];
+      this.pdb_title = row[1];
+      this.pdb_keywords = row[2];
+      this.pdb_experiment = row[3];
+      this.pdb_resolution = row[4];
+
+      this.opm_superfamily = row[5];
+      this.opm_family = row[6];
+      this.opm_representative = row[7];
+      this.opm_species = row[8];
+      this.opm_related = row[9];
+
+      this.mpstruc_group = row[10];
+      this.mpstruc_subgroup = row[11];
+      this.mpstruc_name = row[12];
+      this.mpstruc_species = row[13];
+      this.mpstruc_master = row[14];
+      this.mpstruc_related = row[15];
+
+      this.curated_representative = row[16];
+      this.curated_related = row[17];
+
+      this.status = row[18];
     }
 
     function isDataLoaded(from, to) {

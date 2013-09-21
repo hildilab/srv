@@ -47,15 +47,15 @@ def get_paras(config):
     with sqlite3.connect( config['DATABASE'] ) as conn:
         c = conn.cursor()   
 
-        for row in c.execute( 'SELECT DISTINCT SWfamily FROM mppddbrecord WHERE SWfamily != \'\' ORDER BY SWfamily' ):
+        for row in c.execute( 'SELECT DISTINCT mpstruc_subgroup FROM mppddbrecord WHERE mpstruc_subgroup != \'\' ORDER BY mpstruc_subgroup' ):
             paras['SWfamily'].append(row[0])
-        for row in c.execute('SELECT MAX(DISTINCT RESOLUTION) FROM mppddbrecord WHERE OPMFamily != \'\' AND RESOLUTION != \'NULL\' and RESOLUTION != \'NOT\' and RESOLUTION != \'\'' ):
+        for row in c.execute('SELECT MAX(DISTINCT pdb_resolution) FROM mppddbrecord WHERE opm_family != \'\' AND pdb_resolution != \'NULL\' and pdb_resolution != \'NOT\' and pdb_resolution != \'\'' ):
             paras['maxres']=float(row[0])
-        for row in c.execute('SELECT DISTINCT OPMFamily FROM mppddbrecord WHERE OPMFamily != \'\' ORDER BY OPMFamily'):
+        for row in c.execute('SELECT DISTINCT opm_family FROM mppddbrecord WHERE opm_family != \'\' ORDER BY opm_family'):
             paras['OPMFamily'].append(row[0])
-        for row in c.execute('SELECT DISTINCT EXPDTA FROM mppddbrecord ORDER BY EXPDTA'):
+        for row in c.execute('SELECT DISTINCT pdb_experiment FROM mppddbrecord ORDER BY pdb_experiment'):
             paras['EXPDTA'].append(row[0])
-        for row in c.execute('SELECT DISTINCT OPMSpecies FROM mppddbrecord WHERE OPMSpecies != \'\' ORDER BY OPMSpecies'):
+        for row in c.execute('SELECT DISTINCT pdb_experiment FROM mppddbrecord WHERE pdb_experiment != \'\' ORDER BY pdb_experiment'):
             paras['Species'].append(row[0])
     return paras
 
@@ -64,16 +64,9 @@ def get_paras(config):
 def get_nop(config):
     with sqlite3.connect( config['DATABASE'] ) as conn:
         c = conn.cursor()
-
-        c.execute('SELECT COUNT(DISTINCT PDBID) FROM mppddbrecord')
-        nop = c.fetchone()[0]
-
-        c.execute('SELECT COUNT(DISTINCT PDBID) FROM mppddbrecord WHERE topic=\'polytopic\'')
-        poly = c.fetchone()[0]
-
-        c.execute('SELECT COUNT(DISTINCT PDBID) FROM mppddbrecord WHERE topic=\'bitopic\'')
-        bi = c.fetchone()[0]            
-    return nop, poly, bi
+        c.execute('SELECT COUNT(DISTINCT pdb_id) FROM mppddbrecord')
+        nop = c.fetchone()[0]         
+    return nop, 0, 0
 
 
 
@@ -192,70 +185,24 @@ def read_entries(config, request, paras, table=False):
    
     return pdb_table
 
+# "pdb_id", "pdb_title", "pdb_keywords", "pdb_experiment", "pdb_resolution",
+# "opm_superfamily", "opm_family", "opm_representative",
+# "mpstruc_group", "mpstruc_subgroup", "mpstruc_name"
+
 def read_entries2(config, request, paras, table=False):
-    # TODO make safe!!!
-    expdta = frozenset( paras['EXPDTA'] )
-    swfamily = frozenset( paras['SWfamily'] )
-    nmr_methods = frozenset([
-        'FIBER DIFFRACTION', 'SOLUTION NMR', 'SOLID-STATE NMR',
-        'SOLUTION NMR; SOLID-STATE NMR', 'FIBER DIFFRACTION; SOLID-STATE NMR'
-    ])
 
-    methods = frozenset( request.form.getlist('methods[]') )
-    minres = request.form.get('minres')
-    maxres = request.form.get('maxres')
-    family  = request.form.getlist('family[]')
-    try: family.remove("tmpvalue")
-    except: pass
-    family = frozenset( family )
-    pdbids = request.form.get('pdbids')
-    if pdbids:
-        if pdbids.startswith("Enter PDB ID(s)"):
-            pdbids = None
-        else:
-            pdbids = re.split( "[\s,]+", pdbids )
-    keywds = request.args.get('keywds')
-    if keywds:
-        if keywds.startswith("PDB Keyword"):
-            keywds = None
-        else:
-            keywds = re.split( "[\s,]+", keywds.upper() )
-   
     where = []
-
-    if minres and maxres:
-        res_where = "( CAST(RESOLUTION as FLOAT) BETWEEN %s AND %s)" % ( minres, maxres )
-    elif minres:
-        res_where = "CAST(RESOLUTION as FLOAT) >= %s" % minres
-    elif maxres:
-        res_where = "CAST(RESOLUTION as FLOAT) <= %s" % maxres
-    else:
-        res_where = ""
-
-    if res_where:
-        if nmr_methods.intersection( methods ):
-            res_where += " or (RESOLUTION=\'NULL\' or RESOLUTION=\'NOT\')"
-        where.append( res_where )
-
-    if methods and methods!=expdta:
-        where.append( 
-            " OR ".join([ "EXPDTA = \'%s\'" % x for x in methods ])
-        )
-
-    if family and family!=swfamily:
-        where.append( 
-            " OR ".join([ "SWfamily = \'%s\'" % x for x in family ])
-        )
-
+    pdbids = ""
+    keywds = request.args.get('keywds')
+    
     if keywds:
-        print keywds
+        keywds = re.split( "[\s,]+", keywds.upper() )
         pdbids = [ x for x in keywds if len(x)==4 ]
-        print pdbids
 
     if pdbids:
         where.append( 
             " OR ".join([ 
-                "PDBID = \'%s\' COLLATE NOCASE" % x for x in pdbids 
+                "pdb_id = \'%s\' COLLATE NOCASE" % x for x in pdbids 
             ])
         )
    
@@ -263,9 +210,9 @@ def read_entries2(config, request, paras, table=False):
         where.append( 
             " OR ".join([ 
                 (   
-                    "KEYWDS like \'%%%s%%\' COLLATE NOCASE OR "
-                    "SWfamily like \'%%%s%%\' COLLATE NOCASE OR "
-                    "OPMFamily like \'%%%s%%\' COLLATE NOCASE"
+                    "pdb_keywords like \'%%%s%%\' COLLATE NOCASE OR "
+                    "mpstruc_subgroup like \'%%%s%%\' COLLATE NOCASE OR "
+                    "opm_family like \'%%%s%%\' COLLATE NOCASE"
                 ) % ( x, x, x ) 
                 for x in keywds 
             ])
@@ -276,7 +223,7 @@ def read_entries2(config, request, paras, table=False):
     else:
         where = ""
 
-    sortby = request.args.get('sortby', 'PDBID')
+    sortby = request.args.get('sortby', 'pdb_id')
     direction = request.args.get('dir', 'ASC')
     order_clause = "ORDER BY %s %s" % ( sortby, direction )
 
@@ -285,15 +232,14 @@ def read_entries2(config, request, paras, table=False):
     limit_clause = "LIMIT %i, %i" % ( start, limit) if limit else ""
 
     query = (
-        "SELECT DISTINCT "
-            "PDBID, EXPDTA, RESOLUTION, SWfamily, OPMFamily, OPMSpecies "
+        "SELECT * "
         "FROM mppddbrecord "
         "" + where + ""
         " " + order_clause + ""
         " " + limit_clause + ""
     )
     query_count = (
-        "SELECT DISTINCT COUNT(*) "
+        "SELECT COUNT(*) "
         "FROM mppddbrecord "
         "" + where + ""
     )

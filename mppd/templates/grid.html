@@ -32,12 +32,29 @@
   };
 
   var columns = [
-    { id: "pdbid", name: "PDB", field: "pdbid", width: 60, sortable: true },
-    { id: "EXPDTA", name: "EXPDTA", field: "EXPDTA", width: 150, sortable: true },
-    { id: "RESOLUTION", name: "RESOLUTION", field: "RESOLUTION", width: 50, sortable: true },
-    { id: "SWfamily", name: "SWfamily", field: "SWfamily", width: 150, sortable: true },
-    { id: "OPMFamily", name: "OPMFamily", field: "OPMFamily", width: 150, sortable: true },
-    { id: "OPMSpecies", name: "OPMSpecies", field: "OPMSpecies", width: 150, sortable: true }
+    { id: "pdb_id", name: "ID", field: "pdb_id", width: 60, sortable: true },
+    { id: "pdb_title", name: "Title", field: "pdb_title", width: 150, sortable: true },
+    { id: "pdb_keywords", name: "Keywords", field: "pdb_keywords", width: 150, sortable: true },
+    { id: "pdb_experiment", name: "Experiment", field: "pdb_experiment", width: 150, sortable: true },
+    { id: "pdb_resolution", name: "Resolution", field: "pdb_resolution", width: 50, sortable: true },
+    
+    { id: "opm_superfamily", name: "OPM Superfamily", field: "opm_superfamily", width: 150, sortable: true },
+    { id: "opm_family", name: "OPM Family", field: "opm_family", width: 150, sortable: true },
+    { id: "opm_reresentative", name: "OPM Representative", field: "opm_representative", width: 60, sortable: true },
+    { id: "opm_species", name: "OPM Species", field: "opm_species", width: 150, sortable: true },
+    { id: "opm_related", name: "OPM Related", field: "opm_related", width: 150, sortable: true },
+
+    { id: "mpstruc_group", name: "MPstruc Group", field: "mpstruc_group", width: 150, sortable: true },
+    { id: "mpstruc_subgroup", name: "MPstruc Subgroup", field: "mpstruc_subgroup", width: 150, sortable: true },
+    { id: "mpstruc_name", name: "MPstruc Name", field: "mpstruc_name", width: 150, sortable: true },
+    { id: "mpstruc_species", name: "MPstruc Species", field: "mpstruc_species", width: 150, sortable: true },
+    { id: "mpstruc_master", name: "MPstruc Master", field: "mpstruc_master", width: 60, sortable: true },
+    { id: "mpstruc_related", name: "MPstruc Related", field: "mpstruc_related", width: 150, sortable: true },
+
+    { id: "curated_representative", name: "Curated Representative", field: "curated_representative", width: 60, sortable: true },
+    { id: "curated_related", name: "Curated Related", field: "curated_related", width: 150, sortable: true },
+
+    { id: "status", name: "Status", field: "status", width: 100, sortable: true },
   ];
 
   var options = {
@@ -99,7 +116,7 @@
     });
 
     loader.setSearch($("#txtSearch").val());
-    loader.setSort("pdbid", 1);
+    loader.setSort("pdb_id", 1);
 
     grid.registerPlugin( 
     	new Slick.AutoTooltips({ enableForHeaderCells: true })
