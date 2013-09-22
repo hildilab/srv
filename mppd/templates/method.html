@@ -1,0 +1,36 @@
+{% extends "MPPD_layout.html" %}
+{% block title %}Methods{% endblock %}
+{% block body %}
+
+<div id="method">
+<h2>Methods</h2>
+<br>
+
+<h3>List of helical membrane proteins</h3>
+MP:PD encloses all polytopic and bitopic membrane proteins derived from the (OPM) database <a href="{{ page('refs') }}">[1]</a>. MP:PD is thus a sub dataset of PDB and lists only proteins with two or more helical trans membrane spanning parts. The present list contains {{nop[0]}} structures. MP:PD is regularly updated. The last update was on the 06-11-2013.
+<br><br>
+
+
+<h3>Calculation of packing densities</h3>
+
+The atomic packing density quantifies the space between atoms. It allows a better approximation of van der Waals contacts and surfaces than the simple calculation of solvent excluded surfaces that does not respect packing defects enclosed therein. It uses two portions of atomic volume, the van der Waals volume V(vdW) (inside the van der Waals radius), and the solvent excluded volume V(se) (a 1.4 Å layer cushioning the vdW sphere). The Voronoi Cell algorithm <a href="{{ page('refs') }}">(Goede, Preissner, &amp; Frömmel, 1997)</a> calculates, how much of the V(vdW) and V(se) is occupied by other atoms. The packing density (PD) is then calculated from the remaining volumes V(vdW) and the sum of V(vdW) and V(se) using the formula PD = V(vdW) / [V(vdW) + V(se)]. The core algorithm to calculate atomic volumes has been implemented in Delphi and an intermediate layer in Python. It calculates atomic volumes from PDB structures and produces modified PDB files from which packing densities, and tabular reports containing average volumes and densities are calculated. We used the PROTOR radius set to define atomic volumes <a href="{{ page('refs') }}">(Tsai &amp; Gerstein, 2002)</a>. The packing densities were calculated for the original PDB files without water and for our final structure files containing all newly assigned internal water. 
+<br><br>
+
+
+<h3>Cavities</h3>
+Internal cavities are frequently found in protein domains with more than 150 amino acids <a href="{{ page('refs') }}">(Rother, Preissner, Goede, &amp; Frömmel, 2003)</a>. 
+
+Internal cavities are defined here as internal packing defects large enough to enclose at least a spherical probe with 1.4 Å radius which approximates the Couloumb radius of a single water molecule. ‘Internal’ means that the cavity is largely buried within the protein interior. To differentiate buried from exposed protein atoms forming internal or largely exposed cavities, respectively, we constructed a tight envelope around the protein by rolling a 2.8 Å sized spherical probe along the protein surface using the program MSMS <a href="{{ page('refs') }}">(Sanner, Olson, &amp; Spehner, 1996)</a>. With this definition, we also include cavities that are partially accessible to water from the bulk phase, i.e. cavities placed at invaginations of protein surfaces or within channels and pores restricted by narrow entranceways. 
+<br>
+However, we clearly exclude wide open cavities and pockets lying at the protein surface. The accuracy of the so called solvent accessible surfaces of protein cavities can be improved if the radii of the cavity forming atoms are allowed to change depending on the polar or hydrophobic nature of the cavity <a href="{{ page('refs') }}">(Li &amp; Nussinov, 1998)</a>. To calculate the shape of internal cavities, we are, accordingly, using a spherical probe of 1.4 Å, the Couloumb radius of water, to calculate the surface of polar cavities (i.e. cavities including internal water, for details see next chapter) and a spherical probe of 1.7 Å, the van der Waals radius of water, to calculate the surface of hydrophobic cavities (i.e. cavities not containing internal water). 
+<br><br>
+
+
+<h3>Calculation of internal water positions</h3>
+To find internal water positions, not reported in the PDB entry, we used an exhaustive search of the program DOWSER <a href="{{ page('refs') }}">(Zhang &amp; Hermans, 1996)</a>. This program detects protein cavities and pockets and assesses their hydrophilicity in terms of energy interaction of a water molecule with the surrounding atoms. Water molecules with interaction energies below 10 kcal/mol are considered low energy waters and are selected for output. After an initial run of the 'dowserx' script we applied various runs of the 'dowser-repeat' script until no additional low energy water positions are detected. Because hetero atoms are not taken into account by DOWSER - in the absence of appropriate parameters which are not provided by that tool - we did not place internal waters in contact distance to a heteroatom. Contact distance is defined here as 3.9 Å corresponding to the cut-off distance used to define hydrogen bonds. We thus only include experimentally determined water in contact distance to hetero atoms. Water placed closer as 1.4 Å to or outside the surface (see last chapter) is defined not to be buried. We keep experimentally determined internal water only when no low energy water is detected within 2.7 Å of it, the distance of a strong water-water hydrogen bond. 
+<br><br>
+
+
+</div>
+
+{%endblock%}

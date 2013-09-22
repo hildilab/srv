@@ -1,29 +1,15 @@
 #!/usr/bin/env python
-"""
-#####################################################
-# DMPC - Webserver Script                           #
-# previous name: MPHD                               #
-# http://proteinformatics.charite.de/mppd           #
-#                                                   # 
-# Copyright (C) 2011-2013 by                        # 
-# Dominic Theune <dominic.theune@charite.de>        #
-#                                                   #
-# All rights reserved.                              #
-# BSD license.                                      #
-#####################################################
-""" 
 
 import os
 import re
 import tempfile
 import zipfile
 import sqlite3
-import uuid
 import json
 
 from flask import (
-    Flask, request, session, render_template, 
-    send_from_directory, send_file
+    Flask, request, render_template, 
+    send_from_directory, send_file, url_for
 )
 
 
@@ -32,165 +18,23 @@ cfg_file = 'app.cfg'
 app = Flask( __name__ )
 app.config.from_pyfile( cfg_file )
 
-url_dir = app.config.get("URL_PREFIX", "")
-app_path = app.config.get("APP_PATH", "")
-version = "3.1"
-
-
-
-def get_paras(config):
-    paras = {
-        'SWfamily':[], 'OPMFamily':[], 
-        'EXPDTA':[], 'Species':[], 
-        'maxres':0
-    }
-    with sqlite3.connect( config['DATABASE'] ) as conn:
-        c = conn.cursor()   
-
-        for row in c.execute( 'SELECT DISTINCT mpstruc_subgroup FROM mppddbrecord WHERE mpstruc_subgroup != \'\' ORDER BY mpstruc_subgroup' ):
-            paras['SWfamily'].append(row[0])
-        for row in c.execute('SELECT MAX(DISTINCT pdb_resolution) FROM mppddbrecord WHERE opm_family != \'\' AND pdb_resolution != \'NULL\' and pdb_resolution != \'NOT\' and pdb_resolution != \'\'' ):
-            paras['maxres']=float(row[0])
-        for row in c.execute('SELECT DISTINCT opm_family FROM mppddbrecord WHERE opm_family != \'\' ORDER BY opm_family'):
-            paras['OPMFamily'].append(row[0])
-        for row in c.execute('SELECT DISTINCT pdb_experiment FROM mppddbrecord ORDER BY pdb_experiment'):
-            paras['EXPDTA'].append(row[0])
-        for row in c.execute('SELECT DISTINCT pdb_experiment FROM mppddbrecord WHERE pdb_experiment != \'\' ORDER BY pdb_experiment'):
-            paras['Species'].append(row[0])
-    return paras
+URL_DIR = app.config.get("URL_PREFIX", "")
+APP_PATH = app.config.get("APP_PATH", "")
+VERSION = "3.1"
 
 
 
 def get_nop(config):
     with sqlite3.connect( config['DATABASE'] ) as conn:
         c = conn.cursor()
-        c.execute('SELECT COUNT(DISTINCT pdb_id) FROM mppddbrecord')
+        c.execute('SELECT COUNT(*) FROM mppddbrecord')
         nop = c.fetchone()[0]         
     return nop, 0, 0
 
+NOP = get_nop( app.config )
 
 
-def read_entries(config, request, paras, table=False):
-    # TODO make safe!!!
-    expdta = frozenset( paras['EXPDTA'] )
-    swfamily = frozenset( paras['SWfamily'] )
-    nmr_methods = frozenset([
-        'FIBER DIFFRACTION', 'SOLUTION NMR', 'SOLID-STATE NMR',
-        'SOLUTION NMR; SOLID-STATE NMR', 'FIBER DIFFRACTION; SOLID-STATE NMR'
-    ])
-
-    methods = frozenset( request.form.getlist('methods[]') )
-    minres = request.form.get('minres')
-    maxres = request.form.get('maxres')
-    family  = request.form.getlist('family[]')
-    try: family.remove("tmpvalue")
-    except: pass
-    family = frozenset( family )
-    pdbids = request.form.get('pdbids')
-    if pdbids:
-        if pdbids.startswith("Enter PDB ID(s)"):
-            pdbids = None
-        else:
-            pdbids = re.split( "[\s,]+", pdbids )
-    keywds = request.form.get('keywds')
-    if keywds:
-        if keywds.startswith("PDB Keyword"):
-            keywds = None
-        else:
-            keywds = re.split( "[\s,]+", keywds.upper() )
-   
-    where = []
-
-    if minres and maxres:
-        res_where = "( CAST(RESOLUTION as FLOAT) BETWEEN %s AND %s)" % ( minres, maxres )
-    elif minres:
-        res_where = "CAST(RESOLUTION as FLOAT) >= %s" % minres
-    elif maxres:
-        res_where = "CAST(RESOLUTION as FLOAT) <= %s" % maxres
-    else:
-        res_where = ""
-
-    if res_where:
-        if nmr_methods.intersection( methods ):
-            res_where += " or (RESOLUTION=\'NULL\' or RESOLUTION=\'NOT\')"
-        where.append( res_where )
-
-    if methods and methods!=expdta:
-        where.append( 
-            " OR ".join([ "EXPDTA = \'%s\'" % x for x in methods ])
-        )
-
-    if family and family!=swfamily:
-        where.append( 
-            " OR ".join([ "SWfamily = \'%s\'" % x for x in family ])
-        )
-
-    if pdbids:
-        where.append( 
-            " OR ".join([ 
-                "PDBID = \'%s\' COLLATE NOCASE" % x for x in pdbids 
-            ])
-        )
-   
-    if keywds:
-        where.append( 
-            " OR ".join([ 
-                (   
-                    "KEYWDS like \'%%%s%%\' COLLATE NOCASE OR "
-                    "SWfamily like \'%%%s%%\' COLLATE NOCASE OR "
-                    "OPMFamily like \'%%%s%%\' COLLATE NOCASE"
-                ) % ( x, x, x ) 
-                for x in keywds 
-            ])
-        )
-    
-    if where:
-        where = "WHERE (" + ( ") AND (".join( where ) ) + ")"
-    else:
-        where = ""
-
-    start = int( request.args.get('start', 0) )
-    limit = int( request.args.get('limit', 0) )
-    limit_clause = "LIMIT %i, %i" % ( start, limit) if limit else ""
-
-    query = (
-        "SELECT DISTINCT "
-            "PDBID, EXPDTA, RESOLUTION, SWfamily, OPMFamily, OPMSpecies "
-        "FROM mppddbrecord "
-        "" + where + " "
-        "ORDER by PDBID"
-        " " + limit_clause + ""
-    )
-
-    print query
-    
-    if table:
-        pdb_table = []
-        with sqlite3.connect( config['DATABASE'] ) as conn:
-            c = conn.cursor()
-            for row in c.execute( query ):
-                pdb_table.append( row )
-    else:
-        pdb_table = {}
-        with sqlite3.connect( config['DATABASE'] ) as conn:
-            c = conn.cursor()
-            for row in c.execute( query ):
-                pdb_table[row[0]] = {
-                    'EXPDTA':row[1], 
-                    'RESOLUTION': row[2], 
-                    'SWfamily': row[3], 
-                    'OPMFamily':row[4], 
-                    'OPMSpecies': row[5]
-                }
-   
-    return pdb_table
-
-# "pdb_id", "pdb_title", "pdb_keywords", "pdb_experiment", "pdb_resolution",
-# "opm_superfamily", "opm_family", "opm_representative",
-# "mpstruc_group", "mpstruc_subgroup", "mpstruc_name"
-
-def read_entries2(config, request, paras, table=False):
-
+def read_entries(config, request, table=False):
     where = []
     pdbids = ""
     keywds = request.args.get('keywds')
@@ -258,47 +102,44 @@ def read_entries2(config, request, paras, table=False):
     return count, pdb_table
 
 
+def page_url( page ):
+    return URL_DIR + url_for( 'pages', page=page )
 
-paras = get_paras( app.config )
-nop = get_nop( app.config )
+def static_url( filename ):
+    return URL_DIR + url_for( 'static', filename=filename )
 
-def render_template2( tmpl_file, **kwargs ):
+def img_url( filename ):
+    return static_url( "img/" + filename )
+
+def js_url( filename ):
+    return static_url( "js/" + filename )
+
+
+@app.route('/', defaults={'page': "welcome"})
+@app.route('/<string:page>/')
+def pages( page ):
+    if page not in [
+        "welcome", "grid", "manual", "method", "statistics",
+        "faq", "refs", "links"
+    ]:
+        page = "welcome"
     return render_template(
-        tmpl_file, nop=nop, version=version, url_dir=url_dir, **kwargs
+        '%s.html' % page, nop=NOP, version=VERSION,
+        page=page_url, static=static_url, img=img_url, js=js_url
     )
 
 
-@app.route('/')
-def index():
-    return render_template2( 'welcome.htm' )
-
-@app.route('/go', methods=['POST','GET'])
-def go():
-    key = str( uuid.uuid4() )
-    session.permanent_session_lifetime = 7
-    session.permanent = True
-    
-    pdb_table = read_entries( app.config, request, paras )
-
-    if request.method in [ 'GET', 'POST' ]:
-        return render_template2(
-            'results.html', key=key, status="init", files={},
-            pdb_table=pdb_table, provi_url=app.config["PROVI_URL"]
-        )
-    else:
-        return "error"
-
-
-@app.route('/search/')
-def search():
-    return render_template2(
-        'search.html', svalues=paras, lmethods=len(paras['EXPDTA'])
+@app.route('/static/<path:filename>')
+def static(filename):
+    return send_from_directory(
+        os.path.join( APP_PATH, "static/" ), filename, as_attachment=True
     )
+
 
 @app.route('/query', methods=['POST','GET'])
 def query():
-    count, pdb_table = read_entries2( 
-        app.config, request, paras, table=True
+    count, pdb_table = read_entries( 
+        app.config, request, table=True
     )
     return json.dumps({
         "start": int( request.args.get('start', 0) ),
@@ -306,55 +147,6 @@ def query():
         "results": pdb_table
     })
 
-@app.route('/grid/')
-def grid():
-    return render_template2( 'grid.html' )
-
-@app.route('/refs/')
-def refs():
-    return render_template2( 'refs.htm' )
-
-@app.route('/usage/')
-def usage():
-    return render_template2( 'usage.htm' )
-
-@app.route('/welcome/')
-def welcome():
-    return render_template2( 'welcome.htm' )
- 
-@app.route('/faq/')
-def faq():
-    return render_template2( 'faq.htm' )
-
-@app.route('/links/')
-def links():
-    return render_template2( 'links.htm' )
-
-@app.route('/method/')
-def method():
-    return render_template2( 'method.htm' )
-
-@app.route('/changelog/')
-def changelog():
-    return render_template2( 'changelog.htm' )
-
-@app.route('/statistics/')
-def statistics():
-    return render_template2( 'statistics.html' )
-
-
-
-@app.route('/statisch/<path:filename>')
-def statisch(filename):
-    return send_from_directory(
-        os.path.join( app_path, "static/" ), filename, as_attachment=True
-    )
-
-@app.route('/images/<path:filename>')
-def images(filename):
-    return send_from_directory(
-        os.path.join( app_path, "images/" ), filename, as_attachment=True
-    )
 
 @app.route('/download/<string:pdb_id>')
 def download(pdb_id):
