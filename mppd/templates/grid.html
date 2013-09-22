@@ -12,118 +12,215 @@
 {% endblock%}
 {% block body %}
 
-<div style="width:800px;float:left;">
-  <div class="grid-header" style="width:100%">
-        <span style="float:right;display:inline-block;">
-          Search by PDB ID, keyword or classification:
-          <input type="text" size=40 id="txtSearch" value="">
-        </span>
-  </div>
+<div style="width:850px;float:left;">
   <div id="myGrid" style="width:100%;height:600px;"></div>
 </div>
 
 <script>
-  var grid;
-  var loader = new Slick.Data.MppdRemoteModel();
+    var grid;
+    var loader = new Slick.Data.MppdRemoteModel();
+    var provi_url = "{{provi_url}}";
 
-  var dateFormatter = function (row, cell, value, columnDef, dataContext) {
-    return value;
-  };
+    var actionsFormatter = function( row, cell, value, columnDef, dataContext ){
+        var info = '<i row="' + row + '" class="icon-info-sign" title="show info" style="cursor:pointer;"></i>';
+        var view = '';
+        var download = '';
+        if( dataContext["status"]=="included" ){
+            view = '<a style="text-decoration:none;" target="_blank" ' +
+                'href="' + provi_url + 
+                    '?dir=mppd&file=' + value + '/mppd.provi">' +
+                '<i class="icon-eye-open" title="view in Provi"></i>' +
+            '</a>';
+            download = '<a style="text-decoration:none;" ' +
+                    'href="../download/' + value + '">' +
+                '<i class="icon-download-alt" title="download"></i>' +
+            '</a>';
+        }
+        return [ info, view, download ].join(" ");
+    };
 
-  var columns = [
-    { id: "pdb_id", name: "ID", field: "pdb_id", width: 60, sortable: true },
-    { id: "pdb_title", name: "Title", field: "pdb_title", width: 150, sortable: true },
-    { id: "pdb_keywords", name: "Keywords", field: "pdb_keywords", width: 150, sortable: true },
-    { id: "pdb_experiment", name: "Experiment", field: "pdb_experiment", width: 150, sortable: true },
-    { id: "pdb_resolution", name: "Resolution", field: "pdb_resolution", width: 50, sortable: true },
+    if( $.query.get('full') ){
+        var columns = [
+            { id: "pdb_id", name: "ID", field: "pdb_id", width: 50, sortable: true },
+            { id: "actions", name: "Actions", field: "pdb_id", width: 60, sortable: false, formatter: actionsFormatter },
+            { id: "pdb_experiment", name: "Experiment", field: "pdb_experiment", width: 150, sortable: true },
+            { id: "pdb_resolution", name: "Resolution", field: "pdb_resolution", width: 50, sortable: true },
+            { id: "pdb_title", name: "Title", field: "pdb_title", width: 510, sortable: true },
+            { id: "pdb_keywords", name: "Keywords", field: "pdb_keywords", width: 150, sortable: true },
+            
+            { id: "opm_superfamily", name: "OPM Superfamily", field: "opm_superfamily", width: 150, sortable: true },
+            { id: "opm_family", name: "OPM Family", field: "opm_family", width: 150, sortable: true },
+            { id: "opm_reresentative", name: "OPM Representative", field: "opm_representative", width: 60, sortable: true },
+            { id: "opm_species", name: "OPM Species", field: "opm_species", width: 150, sortable: true },
+            { id: "opm_related", name: "OPM Related", field: "opm_related", width: 150, sortable: true },
+
+            { id: "mpstruc_group", name: "MPstruc Group", field: "mpstruc_group", width: 150, sortable: true },
+            { id: "mpstruc_subgroup", name: "MPstruc Subgroup", field: "mpstruc_subgroup", width: 150, sortable: true },
+            { id: "mpstruc_name", name: "MPstruc Name", field: "mpstruc_name", width: 150, sortable: true },
+            { id: "mpstruc_species", name: "MPstruc Species", field: "mpstruc_species", width: 150, sortable: true },
+            { id: "mpstruc_master", name: "MPstruc Master", field: "mpstruc_master", width: 60, sortable: true },
+            { id: "mpstruc_related", name: "MPstruc Related", field: "mpstruc_related", width: 150, sortable: true },
+
+            { id: "curated_representative", name: "Curated Representative", field: "curated_representative", width: 60, sortable: true },
+            { id: "curated_related", name: "Curated Related", field: "curated_related", width: 150, sortable: true },
+
+            { id: "status", name: "Status", field: "status", width: 100, sortable: true },
+
+        ];
+    }else{
+        var columns = [
+            { id: "pdb_id", name: "ID", field: "pdb_id", width: 50, sortable: true },
+            { id: "actions", name: "Actions", field: "pdb_id", width: 60, sortable: false, formatter: actionsFormatter },
+            { id: "pdb_experiment", name: "Experiment", field: "pdb_experiment", width: 150, sortable: true },
+            { id: "pdb_resolution", name: "Resolution", field: "pdb_resolution", width: 50, sortable: true },
+            { id: "pdb_title", name: "Title", field: "pdb_title", width: 510, sortable: true },
+            // { id: "pdb_keywords", name: "Keywords", field: "pdb_keywords", width: 150, sortable: true },
+            
+            // { id: "opm_superfamily", name: "OPM Superfamily", field: "opm_superfamily", width: 150, sortable: true },
+            // { id: "opm_family", name: "OPM Family", field: "opm_family", width: 150, sortable: true },
+            // { id: "opm_reresentative", name: "OPM Representative", field: "opm_representative", width: 60, sortable: true },
+            // { id: "opm_species", name: "OPM Species", field: "opm_species", width: 150, sortable: true },
+            // { id: "opm_related", name: "OPM Related", field: "opm_related", width: 150, sortable: true },
+
+            // { id: "mpstruc_group", name: "MPstruc Group", field: "mpstruc_group", width: 150, sortable: true },
+            // { id: "mpstruc_subgroup", name: "MPstruc Subgroup", field: "mpstruc_subgroup", width: 150, sortable: true },
+            // { id: "mpstruc_name", name: "MPstruc Name", field: "mpstruc_name", width: 150, sortable: true },
+            // { id: "mpstruc_species", name: "MPstruc Species", field: "mpstruc_species", width: 150, sortable: true },
+            // { id: "mpstruc_master", name: "MPstruc Master", field: "mpstruc_master", width: 60, sortable: true },
+            // { id: "mpstruc_related", name: "MPstruc Related", field: "mpstruc_related", width: 150, sortable: true },
+
+            // { id: "curated_representative", name: "Curated Representative", field: "curated_representative", width: 60, sortable: true },
+            // { id: "curated_related", name: "Curated Related", field: "curated_related", width: 150, sortable: true },
+
+            // { id: "status", name: "Status", field: "status", width: 100, sortable: true },
+        ];
+    }
+
+    var options = {
+        rowHeight: 24,
+        editable: false,
+        enableAddRow: false,
+        enableCellNavigation: false,
+        enableColumnReorder: false
+    };
+
+    var loadingIndicator = null;
+
     
-    { id: "opm_superfamily", name: "OPM Superfamily", field: "opm_superfamily", width: 150, sortable: true },
-    { id: "opm_family", name: "OPM Family", field: "opm_family", width: 150, sortable: true },
-    { id: "opm_reresentative", name: "OPM Representative", field: "opm_representative", width: 60, sortable: true },
-    { id: "opm_species", name: "OPM Species", field: "opm_species", width: 150, sortable: true },
-    { id: "opm_related", name: "OPM Related", field: "opm_related", width: 150, sortable: true },
+    var info_included = _.template(
+        '<p><b>Keywords:</b> <%= pdb_keywords %></p>' +
+        '<p><b>Links:</b> ' +
+            '<a href="http://www.rcsb.org/pdb/explore/explore.do?structureId=<%= pdb_id %>">RCSB</a>, ' +
+            '<a href="http://opm.phar.umich.edu/protein.php?search=<%= pdb_id %>">OPM</a>, ' +
+            '<a href="http://pdbtm.enzim.hu/?_=/pdbtm/<%= pdb_id %>">PDBTM</a>, ' +
+            '<a href="http://blanco.biomol.uci.edu/mpstruc/">MPstruc</a>, ' +
+        '</p>'
+    );
+    var info_excluded = _.template(
+        '<p><b>Not included:</b> <%= status %></p>'
+    );
+    var info_base = _.template(
+        '<p><b>ID:</b> <%= pdb_id %></p>' + 
+        '<p><b>Title:</b> <%= pdb_title %></p>' +
+        '<p><b>OPM family:</b> <%= opm_family %></p>' +
+        '<p><b>MPstruc subgroup:</b> <%= mpstruc_subgroup %></p>'
+    );
+    var info_tmpl = function( d ){
+        var info;
+        if( d["status"]=="included" ){
+            info = info_included( d );
+        }else{
+            info = info_excluded( d );
+        }
+        return '' +
+            '<div style="margin:10px; font-size:1.4em;" >' +
+                '<p>' + info_base( d ) + '</p>' +
+                '<p>' + info + '</p>' +
+            '</div>' +
+        '';
+    }
 
-    { id: "mpstruc_group", name: "MPstruc Group", field: "mpstruc_group", width: 150, sortable: true },
-    { id: "mpstruc_subgroup", name: "MPstruc Subgroup", field: "mpstruc_subgroup", width: 150, sortable: true },
-    { id: "mpstruc_name", name: "MPstruc Name", field: "mpstruc_name", width: 150, sortable: true },
-    { id: "mpstruc_species", name: "MPstruc Species", field: "mpstruc_species", width: 150, sortable: true },
-    { id: "mpstruc_master", name: "MPstruc Master", field: "mpstruc_master", width: 60, sortable: true },
-    { id: "mpstruc_related", name: "MPstruc Related", field: "mpstruc_related", width: 150, sortable: true },
-
-    { id: "curated_representative", name: "Curated Representative", field: "curated_representative", width: 60, sortable: true },
-    { id: "curated_related", name: "Curated Related", field: "curated_related", width: 150, sortable: true },
-
-    { id: "status", name: "Status", field: "status", width: 100, sortable: true },
-  ];
-
-  var options = {
-    rowHeight: 24,
-    editable: false,
-    enableAddRow: false,
-    enableCellNavigation: false,
-    enableColumnReorder: false
-  };
-
-  var loadingIndicator = null;
-
-
-  $(function () {
-    grid = new Slick.Grid("#myGrid", loader.data, columns, options);
-
-    grid.onViewportChanged.subscribe(function (e, args) {
-      var vp = grid.getViewport();
-      loader.ensureData(vp.top, vp.bottom);
+    $('#myGrid').on( 'click', '.icon-info-sign', function(e){
+        var elm = $(e.originalEvent.target);
+        var d = loader.data[ elm.attr("row") ];
+        elm.qtip({
+            overwrite: false,
+            content: info_tmpl( d ),
+            position: { 
+                my: 'center left', 
+                at: 'right center',
+                viewport: $(window)
+            },
+            style: {
+                widget: true,
+                def: false
+            },
+            show: { 
+                event: event.type, 
+                ready: true 
+            },
+            hide: {
+                event: "unfocus"
+            }
+        }, e);
     });
 
-    grid.onSort.subscribe(function (e, args) {
-      loader.setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
-      var vp = grid.getViewport();
-      loader.ensureData(vp.top, vp.bottom);
-    });
+    $(function () {
+        grid = new Slick.Grid("#myGrid", loader.data, columns, options);
 
-    loader.onDataLoading.subscribe(function () {
-      if (!loadingIndicator) {
-        loadingIndicator = $("<span class='loading-indicator'><label>Buffering...</label></span>").appendTo(document.body);
-        var $g = $("#myGrid");
+        grid.onScroll.subscribe( function(){ 
+            $('.qtip.ui-tooltip').qtip('hide');
+        });
 
-        loadingIndicator
-            .css("position", "absolute")
-            .css("top", $g.position().top + $g.height() / 2 - loadingIndicator.height() / 2)
-            .css("left", $g.position().left + $g.width() / 2 - loadingIndicator.width() / 2);
-      }
+        grid.onViewportChanged.subscribe(function (e, args) {
+          var vp = grid.getViewport();
+          loader.ensureData(vp.top, vp.bottom);
+        });
 
-      loadingIndicator.show();
-    });
+        grid.onSort.subscribe(function (e, args) {
+          loader.setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
+          var vp = grid.getViewport();
+          loader.ensureData(vp.top, vp.bottom);
+        });
 
-    loader.onDataLoaded.subscribe(function (e, args) {
-      for (var i = args.from; i <= args.to; i++) {
-        grid.invalidateRow(i);
-      }
+        loader.onDataLoading.subscribe(function () {
+          if (!loadingIndicator) {
+            loadingIndicator = $("<span class='loading-indicator'><label>Buffering...</label></span>").appendTo(document.body);
+            var $g = $("#myGrid");
 
-      grid.updateRowCount();
-      grid.render();
+            loadingIndicator
+                .css("position", "absolute")
+                .css("top", $g.position().top + $g.height() / 2 - loadingIndicator.height() / 2)
+                .css("left", $g.position().left + $g.width() / 2 - loadingIndicator.width() / 2);
+          }
 
-      loadingIndicator.fadeOut();
-    });
+          loadingIndicator.show();
+        });
 
-    $("#txtSearch").keyup(function (e) {
-      if (e.which == 13) {
-        loader.setSearch($(this).val());
-        var vp = grid.getViewport();
-        loader.ensureData(vp.top, vp.bottom);
-      }
-    });
+        loader.onDataLoaded.subscribe(function (e, args) {
+            for (var i = args.from; i <= args.to; i++) {
+                grid.invalidateRow(i);
+            }
 
-    loader.setSearch($("#txtSearch").val());
-    loader.setSort("pdb_id", 1);
+            grid.updateRowCount();
+            grid.render();
 
-    grid.registerPlugin( 
-    	new Slick.AutoTooltips({ enableForHeaderCells: true })
-	);
+            loadingIndicator.fadeOut();
+        });
 
-    // load the first page
-    grid.onViewportChanged.notify();
-  })
+        if( $.query.get('q') ){
+            $("#txtSearch").val( $.query.get('q') );
+        }
+        loader.setSearch($("#txtSearch").val());
+        loader.setSort("pdb_id", 1);
+
+        grid.registerPlugin( 
+            new Slick.AutoTooltips({ enableForHeaderCells: true })
+        );
+
+        // load the first page
+        grid.onViewportChanged.notify();
+    })
 </script>
 
 {%endblock%}

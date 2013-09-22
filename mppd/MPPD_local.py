@@ -114,6 +114,11 @@ def img_url( filename ):
 def js_url( filename ):
     return static_url( "js/" + filename )
 
+def provi_url( pdb_id ):
+    return "%s?dir=mppd&file=%s/mppd.provi" % (
+        app.config["PROVI_URL"], pdb_id
+    )
+
 
 @app.route('/', defaults={'page': "welcome"})
 @app.route('/<string:page>/')
@@ -125,7 +130,8 @@ def pages( page ):
         page = "welcome"
     return render_template(
         '%s.html' % page, nop=NOP, version=VERSION,
-        page=page_url, static=static_url, img=img_url, js=js_url
+        page=page_url, static=static_url, img=img_url, js=js_url, 
+        provi=provi_url, provi_url=app.config["PROVI_URL"]
     )
 
 
@@ -162,11 +168,12 @@ def download(pdb_id):
             '%s_packdens.csv' % pdb_id
         )
         cav_dir = os.path.join( datapath, "msms_vdw_fin" )
-        for fname in sorted( os.listdir( cav_dir ) ):
-            fzip.write( 
-                os.path.join( cav_dir, fname ),
-                os.path.join( "cavities", os.path.basename( fname ) )
-            )
+        if os.path.isdir( cav_dir ):
+            for fname in sorted( os.listdir( cav_dir ) ):
+                fzip.write( 
+                    os.path.join( cav_dir, fname ),
+                    os.path.join( "cavities", os.path.basename( fname ) )
+                )
     return send_file(
         fp.name,
         attachment_filename="%s_mppd.zip" % pdb_id,

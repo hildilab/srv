@@ -20,16 +20,25 @@
     function init() {
     }
 
+    function frmt( s ){
+      return _.str.capitalize( String(s).toLowerCase() );
+    }
+
+    function frmt_lst( s ){
+      s = s.split(",").join(", ");
+      return _.str.capitalize( String(s).toLowerCase() );
+    }
+
     /*"pdb_id", "pdb_title", "pdb_keywords", "pdb_experiment", "pdb_resolution",
     "opm_superfamily", "opm_family", "opm_representative",
     "mpstruc_group", "mpstruc_subgroup", "mpstruc_name"*/
 
     function DataItem( row ) {
       this.pdb_id = row[0];
-      this.pdb_title = row[1];
-      this.pdb_keywords = row[2];
-      this.pdb_experiment = row[3];
-      this.pdb_resolution = row[4];
+      this.pdb_title = frmt( row[1] );
+      this.pdb_keywords = frmt_lst( row[2] );
+      this.pdb_experiment = frmt( row[3] ).replace( "nmr", "NMR" );
+      this.pdb_resolution = row[4]=="NOT" ? "N/A" : row[4];
 
       this.opm_superfamily = row[5];
       this.opm_family = row[6];
