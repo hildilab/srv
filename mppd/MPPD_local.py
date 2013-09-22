@@ -106,7 +106,7 @@ def page_url( page ):
     return URL_DIR + url_for( 'pages', page=page )
 
 def static_url( filename ):
-    return URL_DIR + url_for( 'static', filename=filename )
+    return URL_DIR + url_for( 'staticx', filename=filename )
 
 def img_url( filename ):
     return static_url( "img/" + filename )
@@ -136,7 +136,7 @@ def pages( page ):
 
 
 @app.route('/static/<path:filename>')
-def static(filename):
+def staticx(filename):
     return send_from_directory(
         os.path.join( APP_PATH, "static/" ), filename, as_attachment=True
     )
