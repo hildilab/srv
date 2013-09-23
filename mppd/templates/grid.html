@@ -7,13 +7,14 @@
 <script src="{{ js('SlickGrid/slick.core.js')}}"></script>
 <script src="{{ js('SlickGrid/slick.grid.js')}}"></script>
 <script src="{{ js('SlickGrid/plugins/slick.autotooltips.js')}}"></script>
+<script src="{{ js('SlickGrid/plugins/slick.rowselectionmodel.js')}}"></script>
 <script src="{{ js('mppd.remotemodel.js')}}"></script>
 
 {% endblock%}
 {% block body %}
 
-<div style="width:850px;float:left;">
-  <div id="myGrid" style="width:100%;height:600px;"></div>
+<div style="width:850px; float:left;">
+  <div id="myGrid" style="width:100%; height:400px;"></div>
 </div>
 
 <script>
@@ -100,8 +101,9 @@
         rowHeight: 24,
         editable: false,
         enableAddRow: false,
-        enableCellNavigation: false,
-        enableColumnReorder: false
+        enableCellNavigation: true,
+        enableColumnReorder: false,
+        // multiColumnSort: true // remote data provider needs adjustment
     };
 
     var loadingIndicator = null;
@@ -110,10 +112,10 @@
     var info_included = _.template(
         '<p><b>Keywords:</b> <%= pdb_keywords %></p>' +
         '<p><b>Links:</b> ' +
-            '<a href="http://www.rcsb.org/pdb/explore/explore.do?structureId=<%= pdb_id %>">RCSB</a>, ' +
-            '<a href="http://opm.phar.umich.edu/protein.php?search=<%= pdb_id %>">OPM</a>, ' +
-            '<a href="http://pdbtm.enzim.hu/?_=/pdbtm/<%= pdb_id %>">PDBTM</a>, ' +
-            '<a href="http://blanco.biomol.uci.edu/mpstruc/">MPstruc</a>, ' +
+            '<a href="http://www.rcsb.org/pdb/explore/explore.do?structureId=<%= pdb_id %>" target="_blank">RCSB</a>, ' +
+            '<a href="http://opm.phar.umich.edu/protein.php?search=<%= pdb_id %>" target="_blank">OPM</a>, ' +
+            '<a href="http://pdbtm.enzim.hu/?_=/hitlist/Protein/%2560pdb_id%2560%2520LIKE%2520%2527%2525<%= pdb_id %>%2525%2527" target="_blank">PDBTM</a>, ' +
+            '<a href="http://blanco.biomol.uci.edu/mpstruc/" target="_blank">MPstruc</a>, ' +
         '</p>'
     );
     var info_excluded = _.template(
@@ -133,7 +135,7 @@
             info = info_excluded( d );
         }
         return '' +
-            '<div style="margin:10px; font-size:1.4em;" >' +
+            '<div style="margin:10px; font-size:1.4em; line-height:1.4em;" >' +
                 '<p>' + info_base( d ) + '</p>' +
                 '<p>' + info + '</p>' +
             '</div>' +
@@ -160,13 +162,25 @@
                 ready: true 
             },
             hide: {
-                event: "unfocus"
+                event: "unfocus click"
             }
         }, e);
     });
 
     $(function () {
+
+        var adjustGridSize = function(){
+            console.log( $("#myGrid").height(), $( window ).height() );
+            $("#myGrid").height( $( window ).height() - 220 );
+            grid.resizeCanvas();
+        }
+
+        $( window ).resize( adjustGridSize );
+
         grid = new Slick.Grid("#myGrid", loader.data, columns, options);
+        adjustGridSize();
+
+        grid.setSelectionModel( new Slick.RowSelectionModel() );
 
         grid.onScroll.subscribe( function(){ 
             $('.qtip.ui-tooltip').qtip('hide');
@@ -183,19 +197,19 @@
           loader.ensureData(vp.top, vp.bottom);
         });
 
-        loader.onDataLoading.subscribe(function () {
-          if (!loadingIndicator) {
-            loadingIndicator = $("<span class='loading-indicator'><label>Buffering...</label></span>").appendTo(document.body);
+        /*loader.onDataLoading.subscribe(function () {
+            if (!loadingIndicator) {
+                loadingIndicator = $("<span class='loading-indicator'><label>Buffering...</label></span>").appendTo(document.body);
             var $g = $("#myGrid");
 
             loadingIndicator
                 .css("position", "absolute")
                 .css("top", $g.position().top + $g.height() / 2 - loadingIndicator.height() / 2)
                 .css("left", $g.position().left + $g.width() / 2 - loadingIndicator.width() / 2);
-          }
+            }
 
-          loadingIndicator.show();
-        });
+            loadingIndicator.show();
+        });*/
 
         loader.onDataLoaded.subscribe(function (e, args) {
             for (var i = args.from; i <= args.to; i++) {
@@ -208,7 +222,7 @@
             loadingIndicator.fadeOut();
         });
 
-        if( $.query.get('q') ){
+        if( _.isString( $.query.get('q') ) ){
             $("#txtSearch").val( $.query.get('q') );
         }
         loader.setSearch($("#txtSearch").val());

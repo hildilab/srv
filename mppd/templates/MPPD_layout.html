@@ -30,7 +30,18 @@
 
     <link rel="stylesheet" href="{{ static('font-awesome/css/font-awesome.min.css') }}">
 
-    
+    <style type="text/css">
+        .ui-tooltip, .qtip {
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.2);
+            border-radius: 1px;         
+            max-width: 500px;
+            min-width: 50px;
+        }
+         .slick-cell.selected {
+            background-color: tomato;
+        }
+    </style>
+
     <script type="text/javascript" src="{{ js('underscore-min.js') }}"></script>
     <script type="text/javascript" src="{{ js('underscore.string.min.js') }}"></script>
     <script type="text/javascript" src="{{ js('underscore.inflection.js') }}"></script>
@@ -41,6 +52,14 @@
     <script type="text/javascript" src="{{ js('qtip2/jquery.qtip.min.js') }}"></script>
 
     <script>
+        // make sure a console object exsists
+        if(typeof window.console === "undefined") {
+            window.console = {};
+            _.each(['log', 'debug', 'info', 'warn', 'error'], function(f){
+                window.console[f] = function(){};
+            });
+        }
+
         $(document).ready(function(){
             var do_search = function( q ){
                 var q = $("#txtSearch").val();
