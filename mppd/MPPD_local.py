@@ -56,7 +56,7 @@ def read_entries(config, request, table=False):
     if keywds:
         # keywds = re.split( "[\s,]+", keywds.upper() )
         keywds = re.findall( 
-            r"[^\s\"']+|\"[^\"]*\"|'[^']*'", keywds.upper()
+            r"[^\s,\"']+|\"[^\"]*\"|'[^']*'", keywds.upper()
         )
         keywds = [ k.strip("'\"") for k in keywds ]
         print keywds

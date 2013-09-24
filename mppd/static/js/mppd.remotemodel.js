@@ -86,6 +86,7 @@
         'kcsa': 'KcsA',
         'kv1.2': 'Kv1.2',
         'kvap': 'KvAP',
+        'l': 'L',
         'm': 'M',
         'm1': 'M1',
         'm2': 'M2',
@@ -129,7 +130,10 @@
     function frmt_lst( s ){
       s = _.map( s.split(","), frmt ).join(", ");
       return s;
-      return _.str.capitalize( String(s).toLowerCase() );
+    }
+
+    function frmt_lst2( s ){
+      return s.split(",").join(", ");
     }
 
     /*"pdb_id", "pdb_title", "pdb_keywords", "pdb_experiment", "pdb_resolution",
@@ -147,17 +151,17 @@
       this.opm_family = row[6];
       this.opm_representative = row[7];
       this.opm_species = row[8];
-      this.opm_related = row[9];
+      this.opm_related = frmt_lst2( row[9] );
 
       this.mpstruc_group = row[10];
       this.mpstruc_subgroup = row[11];
       this.mpstruc_name = row[12];
       this.mpstruc_species = row[13];
       this.mpstruc_master = row[14];
-      this.mpstruc_related = row[15];
+      this.mpstruc_related = frmt_lst2( row[15] );
 
       this.curated_representative = row[16];
-      this.curated_related = row[17];
+      this.curated_related = frmt_lst2( row[17] );
 
       this.status = row[18];
     }

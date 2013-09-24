@@ -87,13 +87,7 @@
 
     
     var info_included = _.template(
-        '<p><b>Keywords:</b> <%= pdb_keywords %></p>' +
-        '<p><b>Links:</b> ' +
-            '<a href="http://www.rcsb.org/pdb/explore/explore.do?structureId=<%= pdb_id %>" target="_blank">RCSB</a>, ' +
-            '<a href="http://opm.phar.umich.edu/protein.php?search=<%= pdb_id %>" target="_blank">OPM</a>, ' +
-            '<a href="http://pdbtm.enzim.hu/?_=/hitlist/Protein/%2560pdb_id%2560%2520LIKE%2520%2527%2525<%= pdb_id %>%2525%2527" target="_blank">PDBTM</a>, ' +
-            '<a href="http://blanco.biomol.uci.edu/mpstruc/" target="_blank">MPstruc</a>, ' +
-        '</p>'
+        ''
     );
     var info_excluded = _.template(
         '<p><b>Not included:</b> <%= status %></p>'
@@ -102,7 +96,16 @@
         '<p><b>ID:</b> <%= pdb_id %></p>' + 
         '<p><b>Title:</b> <%= pdb_title %></p>' +
         '<p><b>OPM family:</b> <%= opm_family %></p>' +
-        '<p><b>MPstruc subgroup:</b> <%= mpstruc_subgroup %></p>'
+        '<p><b>OPM representative:</b> <%= opm_representative %></p>' +
+        '<p><b>OPM related:</b> <%= opm_related %></p>' +
+        '<p><b>MPstruc subgroup:</b> <%= mpstruc_subgroup %></p>' +
+        '<p><b>Keywords:</b> <%= pdb_keywords %></p>' +
+        '<p><b>Links:</b> ' +
+            '<a href="http://www.rcsb.org/pdb/explore/explore.do?structureId=<%= pdb_id %>" target="_blank">RCSB</a>, ' +
+            '<a href="http://opm.phar.umich.edu/protein.php?search=<%= pdb_id %>" target="_blank">OPM</a>, ' +
+            '<a href="http://pdbtm.enzim.hu/?_=/hitlist/Protein/%2560pdb_id%2560%2520LIKE%2520%2527%2525<%= pdb_id %>%2525%2527" target="_blank">PDBTM</a>, ' +
+            '<a href="http://blanco.biomol.uci.edu/mpstruc/" target="_blank">MPstruc</a>, ' +
+        '</p>'
     );
     var info_tmpl = function( d ){
         var info;
