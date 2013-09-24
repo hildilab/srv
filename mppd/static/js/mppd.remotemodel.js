@@ -21,11 +21,114 @@
     }
 
     function frmt( s ){
-      return _.str.capitalize( String(s).toLowerCase() );
+      s = String(s).toLowerCase();
+      s = s.replace( /\b([a-z][0-9]+[a-z])\b/g, function( str ){
+        // console.log( str );
+        return String( str ).toUpperCase();
+      });
+      var replace_map = {
+        '7tm': '7TM',
+        'a1': 'A1',
+        'a2a': 'A2A',
+        'abc': 'ABC',
+        'acrb': 'AcrB',
+        'adp': 'ADP',
+        'amp': 'AMP',
+        'atp': 'ATP',
+        'atpase': 'ATPase',
+        'aqp1': 'AQP1',
+        'b12': 'B12',
+        'br': 'Br',
+        'c': 'C',
+        'c terminal': 'C terminal',
+        'c-terminal': 'C-terminal',
+        'ca': 'Ca',
+        'ca2': 'Ca2',
+        'cax': 'CAX',
+        'ccr5': 'CCR5',
+        'cl': 'Cl',
+        'class b': 'class B',
+        'clc': 'CLC',
+        'cryo-em': 'cryo-EM',
+        'cryoem': 'cryoEM',
+        'cxcr1': 'CXCR1',
+        'cxcr4': 'CXCR4',
+        'd+qb': 'D+QB',
+        'd2': 'D2',
+        'd3': 'D3',
+        'deltanc': 'deltaNC',
+        'dmpc': 'DMPC',
+        'dcpc': 'DCPC',
+        'dpc': 'DPC',
+        'dqaqb': 'DQAQB',
+        'dsbb': 'DsbB',
+        'erbb': 'erbB',
+        'escherichia': 'Escherichia',
+        'e.coli': 'E.coli',
+        'e. coli': 'E. coli',
+        'f1': 'F1',
+        'f1fo': 'F1Fo',
+        'f1c10': 'F1C10',
+        'fab': 'Fab',
+        'fv': 'Fv',
+        'g protein': 'G protein',
+        'g-protein': 'G-protein',
+        'gs protein': 'Gs protein',
+        'gact2': 'GaCT2',
+        'galpha': 'Galpha',
+        'glpf': 'GlpF',
+        'h': 'H',
+        'h1': 'H1',
+        'i': 'I',
+        'ii': 'II',
+        'k': 'K',
+        'k2p4.1': 'K2P4.1',
+        'kcsa': 'KcsA',
+        'kv1.2': 'Kv1.2',
+        'kvap': 'KvAP',
+        'm': 'M',
+        'm1': 'M1',
+        'm2': 'M2',
+        'm3': 'M3',
+        'mate': 'MATE',
+        'mg': 'Mg',
+        'mthk': 'MthK',
+        'n terminus': 'N terminus',
+        'n-terminus': 'N-terminus',
+        'na': 'Na',
+        'narghi': 'NarGHI',
+        'nari': 'NarI',
+        'neu': 'Neu',
+        'nmr': 'NMR',
+        'norm': 'NorM',
+        'ph': 'pH',
+        'rhodobacter': 'Rhodobacter',
+        'serca': 'SERCA',
+        'sds': 'SDS',
+        'sopip': 'SoPIP',
+        't4': 'T4',
+        'tba': 'TBA',
+        'tm7': 'TM7',
+        'tpp': 'TPP',
+        'traak': 'TRAAK',
+      };
+      var keys = _.keys( replace_map ).join('|')
+        .replace('+', '\\+')
+        .replace('.', '\\.');
+      var rg = new RegExp( '\\b(' + keys + ')\\b', 'gi' );
+      s = s.replace(
+        rg, function(str, p1, p2, offset, sx) {
+          // console.log( p1, p2, String(str).toLowerCase(), replace_map[ String(str).toLowerCase() ] );
+          return replace_map[ String(str).toLowerCase() ];
+        }
+      );
+      s = _.str.capitalize( s );
+      return s;
     }
 
     function frmt_lst( s ){
-      s = s.split(",").join(", ");
+      s = _.map( s.split(","), frmt ).join(", ");
+      return s;
       return _.str.capitalize( String(s).toLowerCase() );
     }
 
@@ -37,7 +140,7 @@
       this.pdb_id = row[0];
       this.pdb_title = frmt( row[1] );
       this.pdb_keywords = frmt_lst( row[2] );
-      this.pdb_experiment = frmt( row[3] ).replace( "nmr", "NMR" );
+      this.pdb_experiment = frmt( row[3] );
       this.pdb_resolution = row[4]=="NOT" ? "N/A" : row[4];
 
       this.opm_superfamily = row[5];

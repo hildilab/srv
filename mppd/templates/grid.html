@@ -14,7 +14,13 @@
 {% block body %}
 
 <div style="width:850px; float:left;">
-  <div id="myGrid" style="width:100%; height:400px;"></div>
+    <div>Download table:
+        <a id="sele_dl" href="#">selected</a>
+            (<span id="sele_no">0</span>),
+        <a id="all_dl" href="#" target="_blank">all</a>
+            (<span id="all_no">0</span>)
+    </div>
+    <div id="myGrid" style="width:100%; height:400px;"></div>
 </div>
 
 <script>
@@ -34,68 +40,39 @@
             '</a>';
             download = '<a style="text-decoration:none;" ' +
                     'href="../download/' + value + '">' +
-                '<i class="icon-download-alt" title="download"></i>' +
+                '<i class="icon-download-alt" title="download data"></i>' +
             '</a>';
         }
         return [ info, view, download ].join(" ");
     };
 
-    if( $.query.get('full') ){
-        var columns = [
-            { id: "pdb_id", name: "ID", field: "pdb_id", width: 50, sortable: true },
-            { id: "actions", name: "Actions", field: "pdb_id", width: 60, sortable: false, formatter: actionsFormatter },
-            { id: "pdb_experiment", name: "Experiment", field: "pdb_experiment", width: 150, sortable: true },
-            { id: "pdb_resolution", name: "Resolution", field: "pdb_resolution", width: 50, sortable: true },
-            { id: "pdb_title", name: "Title", field: "pdb_title", width: 510, sortable: true },
-            { id: "pdb_keywords", name: "Keywords", field: "pdb_keywords", width: 150, sortable: true },
-            
-            { id: "opm_superfamily", name: "OPM Superfamily", field: "opm_superfamily", width: 150, sortable: true },
-            { id: "opm_family", name: "OPM Family", field: "opm_family", width: 150, sortable: true },
-            { id: "opm_reresentative", name: "OPM Representative", field: "opm_representative", width: 60, sortable: true },
-            { id: "opm_species", name: "OPM Species", field: "opm_species", width: 150, sortable: true },
-            { id: "opm_related", name: "OPM Related", field: "opm_related", width: 150, sortable: true },
+    var columns = [
+        { id: "pdb_id", name: "ID", field: "pdb_id", width: 50, sortable: true },
+        { id: "actions", name: "Actions", field: "pdb_id", width: 60, sortable: false, formatter: actionsFormatter },
+        { id: "pdb_experiment", name: "Experiment", field: "pdb_experiment", width: 150, sortable: true },
+        { id: "pdb_resolution", name: "Resolution", field: "pdb_resolution", width: 50, sortable: true },
+        { id: "pdb_title", name: "Title", field: "pdb_title", width: 510, sortable: true },
+        { id: "pdb_keywords", name: "Keywords", field: "pdb_keywords", width: 150, sortable: true },
+        
+        { id: "opm_superfamily", name: "OPM Superfamily", field: "opm_superfamily", width: 150, sortable: true },
+        { id: "opm_family", name: "OPM Family", field: "opm_family", width: 150, sortable: true },
+        { id: "opm_reresentative", name: "OPM Representative", field: "opm_representative", width: 60, sortable: true },
+        { id: "opm_species", name: "OPM Species", field: "opm_species", width: 150, sortable: true },
+        { id: "opm_related", name: "OPM Related", field: "opm_related", width: 150, sortable: true },
 
-            { id: "mpstruc_group", name: "MPstruc Group", field: "mpstruc_group", width: 150, sortable: true },
-            { id: "mpstruc_subgroup", name: "MPstruc Subgroup", field: "mpstruc_subgroup", width: 150, sortable: true },
-            { id: "mpstruc_name", name: "MPstruc Name", field: "mpstruc_name", width: 150, sortable: true },
-            { id: "mpstruc_species", name: "MPstruc Species", field: "mpstruc_species", width: 150, sortable: true },
-            { id: "mpstruc_master", name: "MPstruc Master", field: "mpstruc_master", width: 60, sortable: true },
-            { id: "mpstruc_related", name: "MPstruc Related", field: "mpstruc_related", width: 150, sortable: true },
+        { id: "mpstruc_group", name: "MPstruc Group", field: "mpstruc_group", width: 150, sortable: true },
+        { id: "mpstruc_subgroup", name: "MPstruc Subgroup", field: "mpstruc_subgroup", width: 150, sortable: true },
+        { id: "mpstruc_name", name: "MPstruc Name", field: "mpstruc_name", width: 150, sortable: true },
+        { id: "mpstruc_species", name: "MPstruc Species", field: "mpstruc_species", width: 150, sortable: true },
+        { id: "mpstruc_master", name: "MPstruc Master", field: "mpstruc_master", width: 60, sortable: true },
+        { id: "mpstruc_related", name: "MPstruc Related", field: "mpstruc_related", width: 150, sortable: true },
 
-            { id: "curated_representative", name: "Curated Representative", field: "curated_representative", width: 60, sortable: true },
-            { id: "curated_related", name: "Curated Related", field: "curated_related", width: 150, sortable: true },
+        { id: "curated_representative", name: "Curated Representative", field: "curated_representative", width: 60, sortable: true },
+        { id: "curated_related", name: "Curated Related", field: "curated_related", width: 150, sortable: true },
 
-            { id: "status", name: "Status", field: "status", width: 100, sortable: true },
+        { id: "status", name: "Status", field: "status", width: 100, sortable: true },
+    ];
 
-        ];
-    }else{
-        var columns = [
-            { id: "pdb_id", name: "ID", field: "pdb_id", width: 50, sortable: true },
-            { id: "actions", name: "Actions", field: "pdb_id", width: 60, sortable: false, formatter: actionsFormatter },
-            { id: "pdb_experiment", name: "Experiment", field: "pdb_experiment", width: 150, sortable: true },
-            { id: "pdb_resolution", name: "Resolution", field: "pdb_resolution", width: 50, sortable: true },
-            { id: "pdb_title", name: "Title", field: "pdb_title", width: 510, sortable: true },
-            // { id: "pdb_keywords", name: "Keywords", field: "pdb_keywords", width: 150, sortable: true },
-            
-            // { id: "opm_superfamily", name: "OPM Superfamily", field: "opm_superfamily", width: 150, sortable: true },
-            // { id: "opm_family", name: "OPM Family", field: "opm_family", width: 150, sortable: true },
-            // { id: "opm_reresentative", name: "OPM Representative", field: "opm_representative", width: 60, sortable: true },
-            // { id: "opm_species", name: "OPM Species", field: "opm_species", width: 150, sortable: true },
-            // { id: "opm_related", name: "OPM Related", field: "opm_related", width: 150, sortable: true },
-
-            // { id: "mpstruc_group", name: "MPstruc Group", field: "mpstruc_group", width: 150, sortable: true },
-            // { id: "mpstruc_subgroup", name: "MPstruc Subgroup", field: "mpstruc_subgroup", width: 150, sortable: true },
-            // { id: "mpstruc_name", name: "MPstruc Name", field: "mpstruc_name", width: 150, sortable: true },
-            // { id: "mpstruc_species", name: "MPstruc Species", field: "mpstruc_species", width: 150, sortable: true },
-            // { id: "mpstruc_master", name: "MPstruc Master", field: "mpstruc_master", width: 60, sortable: true },
-            // { id: "mpstruc_related", name: "MPstruc Related", field: "mpstruc_related", width: 150, sortable: true },
-
-            // { id: "curated_representative", name: "Curated Representative", field: "curated_representative", width: 60, sortable: true },
-            // { id: "curated_related", name: "Curated Related", field: "curated_related", width: 150, sortable: true },
-
-            // { id: "status", name: "Status", field: "status", width: 100, sortable: true },
-        ];
-    }
 
     var options = {
         rowHeight: 24,
@@ -171,7 +148,7 @@
 
         var adjustGridSize = function(){
             console.log( $("#myGrid").height(), $( window ).height() );
-            $("#myGrid").height( $( window ).height() - 220 );
+            $("#myGrid").height( $( window ).height() - 240 );
             grid.resizeCanvas();
         }
 
@@ -181,6 +158,28 @@
         adjustGridSize();
 
         grid.setSelectionModel( new Slick.RowSelectionModel() );
+
+        grid.onSelectedRowsChanged.subscribe( function(){
+            var rows = grid.getSelectedRows();
+            $('#sele_no').text( rows.length );
+            var url = "#";
+            var target = "";
+            if( rows.length ){
+                url = "../query" + 
+                    "?keywds=" + $("#txtSearch").val() + 
+                    "&sele=" + rows.join(",") +
+                    "&csv=1";
+                sort = grid.getSortColumns();
+                if( sort.length ){
+                    url += "&sortby=" + sort[0].columnId + 
+                        "&dir=" + ( sort[0].sortAsc ? "asc" : "desc" );
+                }
+                target = "_blank";
+            }
+            $('#sele_dl')
+                .attr( "href", url )
+                .attr( "target", target );
+        })
 
         grid.onScroll.subscribe( function(){ 
             $('.qtip.ui-tooltip').qtip('hide');
@@ -216,10 +215,21 @@
                 grid.invalidateRow(i);
             }
 
+            // console.log(grid, grid.getSortColumns());
+            $('#all_no').text( grid.getDataLength() );
+            var url = "../query?keywds=" + $("#txtSearch").val() + "&csv=1"
+            sort = grid.getSortColumns();
+            if( sort.length ){
+                url += "&sortby=" + sort[0].columnId + 
+                    "&dir=" + ( sort[0].sortAsc ? "asc" : "desc" );
+            }
+            $('#all_dl').attr( "href", url );
+
+            grid.setSelectedRows([]);
             grid.updateRowCount();
             grid.render();
 
-            loadingIndicator.fadeOut();
+            // loadingIndicator.fadeOut();
         });
 
         if( _.isString( $.query.get('q') ) ){
