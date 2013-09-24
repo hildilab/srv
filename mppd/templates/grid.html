@@ -49,9 +49,13 @@
     var columns = [
         { id: "pdb_id", name: "ID", field: "pdb_id", width: 50, sortable: true },
         { id: "actions", name: "Actions", field: "pdb_id", width: 60, sortable: false, formatter: actionsFormatter },
-        { id: "pdb_experiment", name: "Experiment", field: "pdb_experiment", width: 150, sortable: true },
-        { id: "pdb_resolution", name: "Resolution", field: "pdb_resolution", width: 50, sortable: true },
-        { id: "pdb_title", name: "Title", field: "pdb_title", width: 510, sortable: true },
+        { id: "pdb_experiment", name: "Experiment", field: "pdb_experiment", width: 130, sortable: true },
+        { id: "pdb_resolution", name: "Resolution", field: "pdb_resolution", width: 45, sortable: true },
+        { id: "pdb_title", name: "Title", field: "pdb_title", width: 370, sortable: true },
+        { id: "tm_packdens_protein_buried", name: "Packing Density, TM", field: "tm_packdens_protein_buried", width: 45, sortable: true },
+        { id: "tm_water_count", name: "Water Count, TM", field: "tm_water_count", width: 45, sortable: true },
+        { id: "tm_residue_count", name: "Residue Count, TM", field: "tm_residue_count", width: 45, sortable: true },
+        { id: "tm_cavity_count", name: "Cavity Count, TM", field: "tm_cavity_count", width: 45, sortable: true },
         { id: "pdb_keywords", name: "Keywords", field: "pdb_keywords", width: 150, sortable: true },
         
         { id: "opm_superfamily", name: "OPM Superfamily", field: "opm_superfamily", width: 150, sortable: true },
@@ -189,14 +193,15 @@
         });
 
         grid.onViewportChanged.subscribe(function (e, args) {
-          var vp = grid.getViewport();
-          loader.ensureData(vp.top, vp.bottom);
+            var vp = grid.getViewport();
+            loader.ensureData(vp.top, vp.bottom);
         });
 
         grid.onSort.subscribe(function (e, args) {
-          loader.setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
-          var vp = grid.getViewport();
-          loader.ensureData(vp.top, vp.bottom);
+            grid.setSelectedRows([]);
+            loader.setSort(args.sortCol.field, args.sortAsc ? 1 : -1);
+            var vp = grid.getViewport();
+            loader.ensureData(vp.top, vp.bottom);
         });
 
         /*loader.onDataLoading.subscribe(function () {
@@ -228,7 +233,6 @@
             }
             $('#all_dl').attr( "href", url );
 
-            grid.setSelectedRows([]);
             grid.updateRowCount();
             grid.render();
 

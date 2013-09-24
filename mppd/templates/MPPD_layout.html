@@ -67,6 +67,7 @@
                     window.location.href = '{{ page("grid") }}' +
                         '?q=' + q;
                 }else{
+                    grid.setSelectedRows([]);
                     loader.setSearch( q );
                     var vp = grid.getViewport();
                     loader.ensureData( vp.top, vp.bottom );

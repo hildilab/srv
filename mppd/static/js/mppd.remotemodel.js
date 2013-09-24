@@ -30,15 +30,18 @@
         '7tm': '7TM',
         'a1': 'A1',
         'a2a': 'A2A',
+        'a2aar': 'A2aAR',
         'abc': 'ABC',
         'acrb': 'AcrB',
         'adp': 'ADP',
         'amp': 'AMP',
+        'ar55': 'AR55',
         'atp': 'ATP',
         'atpase': 'ATPase',
         'aqp1': 'AQP1',
         'b12': 'B12',
         'br': 'Br',
+        'bril': 'BRIL',
         'c': 'C',
         'c terminal': 'C terminal',
         'c-terminal': 'C-terminal',
@@ -87,6 +90,7 @@
         'kv1.2': 'Kv1.2',
         'kvap': 'KvAP',
         'l': 'L',
+        'lppg': 'LPPG',
         'm': 'M',
         'm1': 'M1',
         'm2': 'M2',
@@ -96,6 +100,7 @@
         'mthk': 'MthK',
         'n terminus': 'N terminus',
         'n-terminus': 'N-terminus',
+        'n/ofq': 'N/OFQ',
         'na': 'Na',
         'narghi': 'NarGHI',
         'nari': 'NarI',
@@ -109,6 +114,9 @@
         'sopip': 'SoPIP',
         't4': 'T4',
         'tba': 'TBA',
+        'tm1': 'TM1',
+        'tm1_tm2': 'TM1_TM2',
+        'tm2': 'TM2',
         'tm7': 'TM7',
         'tpp': 'TPP',
         'traak': 'TRAAK',
@@ -164,6 +172,11 @@
       this.curated_related = frmt_lst2( row[17] );
 
       this.status = row[18];
+
+      this.tm_packdens_protein_buried = row[19] ? row[19].toFixed(2) : null;
+      this.tm_water_count = row[20];
+      this.tm_residue_count = row[21];
+      this.tm_cavity_count = row[22];
     }
 
     function isDataLoaded(from, to) {

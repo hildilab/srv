@@ -29,32 +29,34 @@ VERSION = "3.1"
 
 
 
-def get_nop(config):
-    with sqlite3.connect( config['DATABASE'] ) as conn:
+def get_nop():
+    with sqlite3.connect( app.config['DATABASE'] ) as conn:
         c = conn.cursor()
         c.execute('SELECT COUNT(*) FROM mppddbrecord')
         nop = c.fetchone()[0]         
     return nop
 
-def get_names(config):
-    with sqlite3.connect( config['DATABASE'] ) as conn:
+def get_names():
+    with sqlite3.connect( app.config['DATABASE'] ) as conn:
         c = conn.cursor()
         c.execute('PRAGMA table_info(mppddbrecord)')
         names = c.fetchall()
     return [ row[1] for row in names ]
 
 
-NOP = get_nop( app.config )
-NAMES = get_names( app.config )
+NOP = get_nop()
+NAMES = get_names()
 print NAMES
 
-def read_entries(config, request, table=False):
+
+def read_entries( keywds=None, sortby='pdb_id', 
+                    direction='ASC', start=0, limit=0):
     where = []
     pdbids = ""
-    keywds = request.args.get('keywds')
     
     if keywds:
-        # keywds = re.split( "[\s,]+", keywds.upper() )
+        # split by whitespace or comma unless enclosed by 
+        # double or single quotes
         keywds = re.findall( 
             r"[^\s,\"']+|\"[^\"]*\"|'[^']*'", keywds.upper()
         )
@@ -88,12 +90,8 @@ def read_entries(config, request, table=False):
     else:
         where = ""
 
-    sortby = request.args.get('sortby', 'pdb_id')
-    direction = request.args.get('dir', 'ASC')
+    
     order_clause = "ORDER BY %s %s" % ( sortby, direction )
-
-    start = int( request.args.get('start', 0) )
-    limit = int( request.args.get('limit', 0) )
     limit_clause = "LIMIT %i, %i" % ( start, limit) if limit else ""
 
     query = (
@@ -112,7 +110,7 @@ def read_entries(config, request, table=False):
     print query
     
     pdb_table = []
-    with sqlite3.connect( config['DATABASE'] ) as conn:
+    with sqlite3.connect( app.config['DATABASE'] ) as conn:
         c = conn.cursor()
         for row in c.execute( query ):
             pdb_table.append( row )
@@ -165,8 +163,12 @@ def staticx(filename):
 
 @app.route('/query', methods=['POST','GET'])
 def query():
-    count, pdb_table = read_entries( 
-        app.config, request, table=True
+    count, pdb_table = read_entries(
+        keywds=request.args.get('keywds'),
+        sortby=request.args.get('sortby', 'pdb_id'),
+        direction=request.args.get('dir', 'ASC'),
+        start=int( request.args.get('start', 0) ),
+        limit=int( request.args.get('limit', 0) )
     )
     today = datetime.date.today().isoformat()
     sele = request.args.get('sele')
@@ -212,7 +214,12 @@ def download(pdb_id):
         )
         fzip.writestr(
             '%s_info.json' % pdb_id,
-            'TODO'
+            json.dumps( 
+                collections.OrderedDict( 
+                    zip( NAMES, read_entries()[1][0] ) 
+                ),
+                indent=4
+            )
         )
         cav_dir = os.path.join( datapath, "msms_vdw_fin" )
         if os.path.isdir( cav_dir ):
