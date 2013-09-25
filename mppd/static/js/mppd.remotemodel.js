@@ -38,6 +38,7 @@
         'am2': 'AM2',
         'amp': 'AMP',
         'ar55': 'AR55',
+        'arcb': 'ArcB',
         'arch': 'ArcH',
         'atp': 'ATP',
         'atpase': 'ATPase',
@@ -58,6 +59,7 @@
         'clc': 'CLC',
         'cryo-em': 'cryo-EM',
         'cryoem': 'cryoEM',
+        'csmp': 'CSMP',
         'cxcr1': 'CXCR1',
         'cxcr4': 'CXCR4',
         'd+qb': 'D+QB',
@@ -239,6 +241,7 @@
 
       // var url = "http://api.thriftdb.com/api.hnsearch.com/items/_search?filter[fields][type][]=submission&q=" + searchstr + "&start=" + (fromPage * PAGESIZE) + "&limit=" + (((toPage - fromPage) * PAGESIZE) + PAGESIZE);
 
+      searchstr = encodeURIComponent( searchstr );
       var url = "../query?keywds=" + searchstr + "&start=" + (fromPage * PAGESIZE) + "&limit=" + (((toPage - fromPage) * PAGESIZE) + PAGESIZE);
 
       if (sortcol != null) {

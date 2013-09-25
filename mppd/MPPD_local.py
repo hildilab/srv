@@ -54,36 +54,77 @@ def read_entries( keywds=None, sortby='pdb_id',
     where = []
     pdbids = ""
     
-    if keywds:
-        # split by whitespace or comma unless enclosed by 
-        # double or single quotes
-        keywds = re.findall( 
-            r"[^\s,\"']+|\"[^\"]*\"|'[^']*'", keywds.upper()
-        )
-        keywds = [ k.strip("'\"") for k in keywds ]
-        print keywds
-        pdbids = [ x for x in keywds if len(x)==4 ]
+    def phrase( q ):
+        return ("( "
+            "pdb_keywords like \'%%%(q)s%%\' COLLATE NOCASE OR "
+            "pdb_title like \'%%%(q)s%%\' COLLATE NOCASE OR "
+            "mpstruc_subgroup like \'%%%(q)s%%\' COLLATE NOCASE OR "
+            "mpstruc_name like \'%%%(q)s%%\' COLLATE NOCASE OR "
+            "opm_family like \'%%%(q)s%%\' COLLATE NOCASE"
+        " )") % { "q": q }
 
+    if keywds:
+        # # split by whitespace or comma unless enclosed by 
+        # # double or single quotes
+        # keywds = re.findall( 
+        #     r"[^\s,\"']+|\"[^\"]*\"|'[^']*'", keywds.upper()
+        # )
+        # keywds = [ k.strip("'\"") for k in keywds ]
+        # print keywds
+        # pdbids = [ x for x in keywds if len(x)==4 ]
+        s = re.sub( "(\s+OR\s+)", " ", keywds )
+        s = re.sub( "(\s+AND\s+|\s?\+\s?)", "+", s )
+        print s
+
+        x = re.findall( 
+            r"[^\s,\"']+|\"[^\"]*\"|'[^']*'", s
+        )
+        print x
+
+        x2 = []
+        ix = iter(x)
+        for xx in ix:
+            if xx=="+":
+                x2[-1] += xx + next( ix )
+            elif xx[-1]=="+":
+                x2.append( xx + next( ix ) )
+            elif xx[0]=="+":
+                x2[-1] += xx
+            else:
+                x2.append( xx )
+        print x2
+
+        q_or = []
+        for _or in x2:
+            q_and = []
+            for _and in _or.split("+"):
+                q_and.append( phrase( _and.strip("'\"") ) )
+            q_or.append( "( " + " AND ".join( q_and ) + " )" )
+        q_or = "( " + " OR ".join( q_or ) + " )"
+        where.append( q_or )
+
+
+    pdbids = ""
     if pdbids:
         where.append( 
             " OR ".join([ 
-                "pdb_id = \'%s\' COLLATE NOCASE" % x for x in pdbids 
+                "pdb_id = \'%s\' COLLATE NOCASE" % p for p in pdbids 
             ])
         )
    
-    if keywds:
-        where.append( 
-            " OR ".join([ 
-                (   
-                    "pdb_keywords like \'%%%s%%\' COLLATE NOCASE OR "
-                    "pdb_title like \'%%%s%%\' COLLATE NOCASE OR "
-                    "mpstruc_subgroup like \'%%%s%%\' COLLATE NOCASE OR "
-                    "mpstruc_name like \'%%%s%%\' COLLATE NOCASE OR "
-                    "opm_family like \'%%%s%%\' COLLATE NOCASE"
-                ) % ( x, x, x, x, x ) 
-                for x in keywds 
-            ])
-        )
+    # if keywds:
+    #     where.append( 
+    #         " OR ".join([ 
+    #             (   
+    #                 "pdb_keywords like \'%%%s%%\' COLLATE NOCASE OR "
+    #                 "pdb_title like \'%%%s%%\' COLLATE NOCASE OR "
+    #                 "mpstruc_subgroup like \'%%%s%%\' COLLATE NOCASE OR "
+    #                 "mpstruc_name like \'%%%s%%\' COLLATE NOCASE OR "
+    #                 "opm_family like \'%%%s%%\' COLLATE NOCASE"
+    #             ) % ( k, k, k, k, k ) 
+    #             for k in keywds 
+    #         ])
+    #     )
     
     if where:
         where = "WHERE (" + ( ") OR (".join( where ) ) + ")"
