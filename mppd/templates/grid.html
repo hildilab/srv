@@ -83,7 +83,7 @@
         editable: false,
         enableAddRow: false,
         enableCellNavigation: true,
-        enableColumnReorder: false,
+        enableColumnReorder: false
         // multiColumnSort: true // remote data provider needs adjustment
     };
 
@@ -108,13 +108,13 @@
             '<a href="http://www.rcsb.org/pdb/explore/explore.do?structureId=<%= pdb_id %>" target="_blank">RCSB</a>, ' +
             '<a href="http://opm.phar.umich.edu/protein.php?search=<%= pdb_id %>" target="_blank">OPM</a>, ' +
             '<a href="http://pdbtm.enzim.hu/?_=/hitlist/Protein/%2560pdb_id%2560%2520LIKE%2520%2527%2525<%= pdb_id %>%2525%2527" target="_blank">PDBTM</a>, ' +
-            '<a href="http://blanco.biomol.uci.edu/mpstruc/" target="_blank">MPstruc</a>, ' +
+            '<a href="http://blanco.biomol.uci.edu/mpstruc/" target="_blank">MPstruc</a>' +
         '</p>'
     );
     var info_tmpl = function( d ){
         var info;
         if( d["status"]=="included" ){
-            info = info_included( d );
+            info = ''; // info_included( d );
         }else{
             info = info_excluded( d );
         }
@@ -127,7 +127,7 @@
     }
 
     $('#myGrid').on( 'click', '.icon-info-sign', function(e){
-        var elm = $(e.originalEvent.target);
+        var elm = $(e.target);
         var d = loader.data[ elm.attr("row") ];
         elm.qtip({
             overwrite: false,

@@ -130,7 +130,7 @@
         'tm7': 'TM7',
         'tmd': 'TMD',
         'tpp': 'TPP',
-        'traak': 'TRAAK',
+        'traak': 'TRAAK'
       };
       var keys = _.keys( replace_map ).join('|')
         .replace('+', '\\+')
@@ -182,7 +182,13 @@
       this.curated_representative = row[16];
       this.curated_related = frmt_lst2( row[17] );
 
-      this.status = row[18];
+      var s = {
+        included: "included",
+        pending: "calculation pending",
+        low_resolution: "resolution too low (>=4 \u212B)",
+        backbone_only: "only backbone atoms"
+      }
+      this.status = s[ row[18] ];
 
       this.tm_packdens_protein_buried = row[19] ? row[19].toFixed(2) : null;
       this.tm_water_count = row[20];

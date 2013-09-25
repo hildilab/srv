@@ -56,6 +56,7 @@ def read_entries( keywds=None, sortby='pdb_id',
     
     def phrase( q ):
         return ("( "
+            "pdb_id = \'%(q)s\' COLLATE NOCASE OR "
             "pdb_keywords like \'%%%(q)s%%\' COLLATE NOCASE OR "
             "pdb_title like \'%%%(q)s%%\' COLLATE NOCASE OR "
             "mpstruc_subgroup like \'%%%(q)s%%\' COLLATE NOCASE OR "
