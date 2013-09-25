@@ -8,11 +8,11 @@
     <h3>Search</h3>
     <p>The following database fields are taken into account by the search: <i>PDB ID</i>, <i>PDB Kewords</i>, <i>PDB Title</i>, <i>OPM Family</i>, <i>MPstruc Subgroup</i>, <i>MPstruc Name</i>.
     <p>The search is generally case insensitive.</p>
-    <p>White spaces separate query phrases. Results include all entries with a match in any of the query phrases. The can e.g. be used to search for multiple PDB IDs <i>3dqb 3sn6 1c3w</i>.</p>
+    <p>White spaces or comma separate query phrases. Results include all entries with a match in any of the query phrases. This can e.g. be used to search for multiple PDB IDs <i>3dqb 3sn6 1c3w</i>.</p>
     <p>Quoted query phrases are available. E.g. <i>"M intermediate"</i> can be used to find entries related to bacteriorhodopsin's M intermediate.</p>
 
     <h3>Results grid/ table</h3>
-    <p>All data columns are sortable by clicking on the respective header. This allows grouping of the data in a specific column.</p>
+    <p>The data can be sorted by clicking on the respective column header e.g. <i>OPM Family</i> or <i>Packing Density, TM</i>. This allows grouping of the data accoding to a specific column and can thus facilitate the selection of specific rows.</p>
     <p>Rows can be selected using the mouse and standard keys: Clicking on a row selects only that row. Holding the <i>shift</i> key does a range selection. Selection and de-selection of individual rows can be achieved by holding the <i>ctrl</i> key.</p>
     <p>The full table or the selected rows can be downloaded as a CSV file by clicking on the respective links just above the table.</p>
 
@@ -21,7 +21,7 @@
 
     <h3>Programatic DB access (API)</h3>
     <p>Download the zipped data for an entry by its PDB ID: <tt>http://proteinformatics.charite.de/mppd/download/<i>{pdb_id}</i></tt>.</p>
-    <p>Query the data base for a search pharse: <tt>http://proteinformatics.charite.de/mppd/query?keywds=<i>{search_phrase}</i></tt>. This yields a JSON formated file with to following fields: <i>start</i> (should be 0), <i>hits</i> (numbers of results) and <i>results</i> (tabular data for each entry). The column names for the <i>results</i> table are given in the <i>names</i> field.</p>
+    <p>Query the data base for a search pharse: <tt>http://proteinformatics.charite.de/mppd/query?keywds=<i>{search_phrase}</i></tt>. This yields a JSON formated file with the following fields: <i>start</i> (should be 0), <i>hits</i> (numbers of results) and <i>results</i> (tabular data for each entry). The column names for the <i>results</i> table are given in the <i>names</i> field.</p>
 
 
 </div>
