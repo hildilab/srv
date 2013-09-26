@@ -7,29 +7,39 @@
 
     <h2>FAQ</h2>
 
-    <p><a name="q01" class="intralink" ><h3>1. What should I do when I see a security prompt from Java?</h3></a> Java Update 21 introduces changes to the browser plugin security level. Opening Provi you'll receive a security warning from Java asking whether to block the use of the applet (choose: No).</p>
+    <h3>What should I do when I see a security prompt from Java?</h3>
+    <p>Java Update 21 introduces changes to the browser plugin security level. Opening Provi you'll receive a security warning from Java asking whether to block the use of the applet (choose: No).</p>
 
 
-    <p><a name="q02" class="intralink"><h3>2. Using keyword search resulted in no obvious results? </h3></a> The keyword search is a full-text search based on the PDB entries KEYWDS, searching for "G-protein" will get you "<u>G-protein</u> coupled receptors,but also family A" AND "Bindin<u>g-protein</u>-dependent transport system". The keyword search is therefore not optimal for a family search. But its useful if you are looking for e.g. "transporter".</p>
+    <h3>Using keyword search resulted in no obvious results?</h3>
+    <p>The keyword search is a full-text search based on the PDB entries KEYWDS, searching for "G-protein" will get you "<u>G-protein</u> coupled receptors,but also family A" AND "Bindin<u>g-protein</u>-dependent transport system". The keyword search is therefore not optimal for a family search. But its useful if you are looking for e.g. "transporter". However, you can sort the results table according to e.g. the family name and then select only those entries belonging to G-protein coupled receptors.</p>
 
 
-    <p><a name="q03" class="intralink"><h3>3. Which browsers are recommended for MPPD usage?</h3></a> We have tested the site with Google Chrome 5.x+, Mozilla Firefox 3.x+, and Microsoft Internet Explorer 8. Our Visualisation Tool Provi works best with more recent and faster browser versions, e.g. the current version of <a href="http://www.google.com/chrome/" target="_blank">Google Chrome</a>.</p>
+    <h3>Which browsers are recommended for MPPD usage?</h3>
+    <p>We have tested the site with Google Chrome 5.x+, Mozilla Firefox 3.x+, and Microsoft Internet Explorer 8. Our Visualisation Tool Provi works best with more recent and faster browser versions, e.g. the current version of <a href="http://www.google.com/chrome/" target="_blank">Google Chrome</a>.</p>
 
 
-    <p><a name="q04" class="intralink"><h3>4. There are problems showing the results in the built-in molecular viewer Provi.</h3></a> Java must be installed in order to make Provi available. Make sure you are running an updated version of Java.<br><br>
+    <h3>There are problems showing the results in the built-in molecular viewer Provi.</h3>
+    <p>Java must be installed in order to make Provi available. Make sure you are running an updated version of Java.
+        <ul>
+            <li>To test whether Java Applets in general are working on your computer, please consult <a href="http://www.java.com/en/download/testjava.jsp" target="_blank">this page</a> and if necessary follow the suggestions there.</li>
 
-    * To test whether Java Applets in general are working on your computer, please consult <a href="http://www.java.com/en/download/testjava.jsp" target="_blank">this page</a> and if necessary follow the suggestions there.<br><br>
+            <li>The 3D protein viewer component in Provi relies entirely on Jmol which requires a working Java installation. To test whether your combination operating system, web browser and Java supports Jmol, please visit <a href="http://jmol.sourceforge.net/browsercheck/" target="_blank">this page</a>.</li>
 
-    * The 3D protein viewer component in Provi relies entirely on Jmol which requires a working Java installation. To test whether your combination operating system, web browser and Java supports Jmol, please visit <a href="http://jmol.sourceforge.net/browsercheck/" target="_blank">this page</a>.<br><br>
-
-    * If your problem persists, please do not hesitate to contact us via <a href="mailto:alexander.rose@charite.de">email</a>.<br><br></p>
-
-
-    <p><a name="q05" class="intralink"><h3>5. I can't find my protein in MPPD?</h3></a> MPPD contains only polytopic, transmembrane spanning proteins. If you want a specific PDB file calculated, please <a href="mailto:alexander.rose@charite.de">contact us</a>.</p>
+            <li>If your problem persists, please do not hesitate to contact us via <a href="mailto:alexander.rose@charite.de">email</a>.</li>
+        </ul>
+    </p>
 
 
-    <p><a name="q06" class="intralink"><h3>6. Provi is slow, can I speed it up?</h3></a> As with all graphical applications the performance heavily depends on the screen resolution. Reducing the size of the browser window down should result in a speed up.</p>
+    <h3>I can't find my protein in MPPD?</h3>
+    <p>MPPD contains only polytopic, transmembrane spanning proteins. If you want a specific PDB file calculated, please <a href="mailto:alexander.rose@charite.de">contact us</a>.</p>
 
+
+    <h3>Provi is slow, can I speed it up?</h3>
+    <p>As with all graphical applications the performance heavily depends on the screen resolution. Reducing the size of the browser window down should result in a speed up.</p>
+
+    <h3>Why do Monotopic helical membrane proteins have high packing density values?</h3>
+    <p>For calculation of internal packing densities, only buried atoms are respected. For single spanning transmembrane helices only atoms buried within the helix are respected, because these proteins do not make up contacts with other transmembrane helices, i.e. there is no interaction interface where buried atoms are usually not tightly packed.</p>
 
 </div>
 {%endblock%}
