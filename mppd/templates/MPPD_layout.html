@@ -71,6 +71,11 @@
                     loader.setSearch( q );
                     var vp = grid.getViewport();
                     loader.ensureData( vp.top, vp.bottom );
+                    try{
+                        piwikTracker.trackSiteSearch( q, false, false );
+                    }catch(err){
+                        console.log( "piwikTracker.trackSiteSearch" );
+                    }
                 }
             }
             $("#txtSearch").keyup( function(e){
