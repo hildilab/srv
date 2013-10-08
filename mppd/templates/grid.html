@@ -15,9 +15,9 @@
 
 <div style="width:850px; float:left;">
     <div>Download table:
-        <a id="sele_dl" href="#">selected</a>
+        <a class="piwik_download" id="sele_dl" href="#">selected</a>
             (<span id="sele_no">0</span>),
-        <a id="all_dl" href="#" target="_blank">all</a>
+        <a class="piwik_download" id="all_dl" href="#" target="_blank">all</a>
             (<span id="all_no">0</span>)
     </div>
     <div id="myGrid" style="width:100%; height:400px;"></div>
@@ -36,11 +36,11 @@
             view = '<a style="text-decoration:none;" target="_blank" ' +
                 'href="' + provi_url + 
                     '?dir=mppd&file=' + value + '/mppd.provi&unsigned">' +
-                '<i class="icon-eye-open" title="view in Provi"></i>' +
+                '<i row="' + row + '" class="icon-eye-open" title="view in Provi"></i>' +
             '</a>';
             download = '<a style="text-decoration:none;" ' +
                     'href="../download/' + value + '">' +
-                '<i class="icon-download-alt" title="download data"></i>' +
+                '<i row="' + row + '" class="icon-download-alt" title="download data"></i>' +
             '</a>';
         }
         return [ info, view, download ].join(" ");
@@ -149,6 +149,21 @@
                 event: "unfocus click"
             }
         }, e);
+    });
+
+    $('#myGrid').on( 'click', '.icon-download-alt', function(e){
+        var elm = $(e.target);
+        var d = loader.data[ elm.attr("row") ];
+        piwikTracker.trackLink(
+            window.location.protocol + '//' + window.location.host + 
+                '/mppd/download/' + d['pdb_id'],
+            'download'
+        );
+    });
+
+    $('#myGrid').on( 'click', '.icon-eye-open', function(e){
+        var elm = $(e.target);
+        piwikTracker.trackLink( elm.parent().attr("href"), 'link' );
     });
 
     $(function () {
