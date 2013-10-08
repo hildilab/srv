@@ -151,7 +151,7 @@
         }, e);
     });
 
-    $('#myGrid').on( 'click', '.icon-download-alt', function(e){
+    $('#myGrid').on( 'mouseup', '.icon-download-alt', function(e){
         var elm = $(e.target);
         var d = loader.data[ elm.attr("row") ];
         piwikTracker.trackLink(
@@ -161,7 +161,7 @@
         );
     });
 
-    $('#myGrid').on( 'click', '.icon-eye-open', function(e){
+    $('#myGrid').on( 'mouseup', '.icon-eye-open', function(e){
         var elm = $(e.target);
         piwikTracker.trackLink( elm.parent().attr("href"), 'link' );
     });
@@ -169,7 +169,6 @@
     $(function () {
 
         var adjustGridSize = function(){
-            console.log( $("#myGrid").height(), $( window ).height() );
             $("#myGrid").height( $( window ).height() - 240 );
             grid.resizeCanvas();
         }
