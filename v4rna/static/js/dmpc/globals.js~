@@ -1,0 +1,26 @@
+const var AAs = ['A', 'V', 'L', 'I', 'F', 'W', 'M', 'P', 'G', 'S', 'T', 'C', 'Y', 'N', 'Q', 'D', 'E', 'K', 'R', 'H'];
+const var def_propensity_column = [
+          { "sTitle":"PR", "sClass":'proberadius', "aTargets":[ 0 ]  },
+          { "sTitle":"CO", "sClass":'cutoff', "aTargets":[ 1 ]  },
+          { "sTitle":"A", "sClass":'nonpolar', "aTargets":[ 2 ]  },
+          { "sTitle":"V", "sClass":'nonpolar', "aTargets":[ 3 ]  },
+          { "sTitle":"L", "sClass":'nonpolar', "aTargets":[ 4 ]  },
+          { "sTitle":"I", "sClass":'nonpolar', "aTargets":[ 5 ]  },
+          { "sTitle":"F", "sClass":'nonpolar', "aTargets":[ 6 ]  },
+          { "sTitle":"W", "sClass":'nonpolar', "aTargets":[ 7 ]  },
+          { "sTitle":"M", "sClass":'nonpolar', "aTargets":[ 8 ]  },
+          { "sTitle":"P", "sClass":'nonpolar', "aTargets":[ 9 ]  },
+          { "sTitle":"G", "sClass":'polaruncharged', "aTargets":[ 10 ]  },
+          { "sTitle":"S", "sClass":'polaruncharged', "aTargets":[ 11 ]  },
+          { "sTitle":"T", "sClass":'polaruncharged', "aTargets":[ 12 ]  },
+          { "sTitle":"C", "sClass":'polaruncharged', "aTargets":[ 13 ]  },
+          { "sTitle":"Y", "sClass":'polaruncharged', "aTargets":[ 14 ]  },
+          { "sTitle":"N", "sClass":'polaruncharged', "aTargets":[ 15 ]  },
+          { "sTitle":"Q", "sClass":'polaruncharged', "aTargets":[ 16 ]  },
+          { "sTitle":"D", "sClass":'polaracidic', "aTargets":[ 17 ]  },
+          { "sTitle":"E", "sClass":'polaracidic', "aTargets":[ 18 ]  },
+          { "sTitle":"K", "sClass":'polarbasic', "aTargets":[ 19 ]  },
+          { "sTitle":"R", "sClass":'polarbasic', "aTargets":[ 20 ]  },
+          { "sTitle":"H", "sClass":'polarbasic', "aTargets":[ 21 ]  }
+     ];
+

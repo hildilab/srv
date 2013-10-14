@@ -16,3 +16,5 @@ Icon*
 
 mppd/data/*
 mppd/app.cfg
+v4rna/venv/local/lib
+v4rna/venv/local/include

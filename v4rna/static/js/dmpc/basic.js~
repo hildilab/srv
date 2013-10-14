@@ -1,0 +1,13 @@
+function imgchange(img_name, img_src){
+   document[img_name].src = img_src;
+};
+function refchange(ref_name, ref_src){
+   document.links[ref_name].href = ref_src;
+};
+
+function remake(minvalue)
+{
+ document.propensity_main.prSelect.options
+ var x=document.getElementById("prSelect");
+ x.remove(x.value);
+ }

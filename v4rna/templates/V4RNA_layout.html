@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+>
+<head profile="http://dublincore.org/documents/dcq-html/">
+    <title>V4RNA - {% block title %}{% endblock %}</title>
+    <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+    <link rel="schema.DCTERMS" href="http://purl.org/dc/terms/">
+    <link rel="shortcut icon" href="{{ static('favicon.ico') }}" type="image/x-icon">
+    <meta name="DC.title" content="V4RNA: Voronoia for RNA">
+    <meta name="DC.creator" content="Jochen Ismer, Alexander S. Rose, Johanna K. S. Tiemann, Andrean Goede, Kristian Rother, Peter W. Hildebrand">
+    <meta name="DC.subject" content="Voronoia for RNA">
+    <meta name="DC.description" content="Voronoia for RNA">
+    <meta name="DC.publisher" content="Proteinformatics Group: Molecular Modelling">
+    <meta name="DC.contributor" content="Jochen Ismer, Alexander S. Rose, Johanna K. S. Tiemann, Andrean Goede, Kristian Rother, Peter W. Hildebrand">
+    <meta name="DC.type" content="Text" scheme="DCTERMS.DCMIType">
+    <meta name="DC.format" content="text/html" scheme="DCTERMS.IMT">
+    <meta name="DC.identifier"
+          content="http://proteinformatics.charite.de/voronoia4rna/"
+          scheme="DCTERMS.URI">
+    <meta name="DC.language" content="en" scheme="DCTERMS.RFC1766">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="keywords" content="V4RNA, contact, Membrane, Helix, helixpacking, packing, Transmembrane, Protein, Database, crossing, angle, interaction, voronoi">
+    <meta name="author" content="Jochen Ismer, Alexander S. Rose, Johanna K. S. Tiemann, Andrean Goede, Kristian Rother, Peter W. Hildebrand">
+    <meta name="description" content="Voronoia for RNA (V4RNA)">
+    <meta name="robots" content="all">
+
+    <link rel="stylesheet" type="text/css" href="{{ static('style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ static('js/jquery-ui/css/custom-theme/jquery-ui.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ static('js/qtip2/jquery.qtip.min.css') }}">
+
+    <link rel="stylesheet" href="{{ static('font-awesome/css/font-awesome.min.css') }}">
+
+    <style type="text/css">
+        .ui-tooltip, .qtip {
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.2);
+            border-radius: 1px;         
+            max-width: 500px;
+            min-width: 50px;
+        }
+         .slick-cell.selected {
+            background-color: tomato;
+        }
+    </style>
+
+    <script type="text/javascript" src="{{ js('underscore-min.js') }}"></script>
+    <script type="text/javascript" src="{{ js('underscore.string.min.js') }}"></script>
+    <script type="text/javascript" src="{{ js('underscore.inflection.js') }}"></script>
+
+    <script type="text/javascript" src="{{ js('jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ js('jquery-ui/js/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ js('jquery.query.js') }}"></script>
+    <script type="text/javascript" src="{{ js('qtip2/jquery.qtip.min.js') }}"></script>
+
+    <script>
+        // make sure a console object exsists
+        if(typeof window.console === "undefined") {
+            window.console = {};
+            _.each(['log', 'debug', 'info', 'warn', 'error'], function(f){
+                window.console[f] = function(){};
+            });
+        }
+
+        $(document).ready(function(){
+            var do_search = function( q ){
+                var q = $("#txtSearch").val();
+                if( typeof grid==='undefined' ){
+                    window.location.href = '{{ page("grid") }}' +
+                        '?q=' + q;
+                }else{
+                    grid.setSelectedRows([]);
+                    loader.setSearch( q );
+                    var vp = grid.getViewport();
+                    loader.ensureData( vp.top, vp.bottom );
+                    try{
+                        piwikTracker.trackSiteSearch( q, false, false );
+                    }catch(err){
+                        console.log( "piwikTracker.trackSiteSearch" );
+                    }
+                }
+            }
+            $("#txtSearch").keyup( function(e){
+                if( e.which == 13 ){ do_search(); }
+            });
+            $("#txtSearch").next().click( do_search );
+        });
+    </script>
+
+    {% block head %}{% endblock %}
+</head>
+
+
+<body>
+
+
+<div id="header">
+    <div id="title" class="ui-widget ui-widget-content">
+        <div id="logo" style="text-align:left;position:relative;height:105px;">
+            <img src="{{ img('zeichnung1.png') }}" style="padding-right: 15px; margin-right:15px;height:105px;float:left;border-right:solid #EEEEEE 2px;" alt="MP:PD LOGO">
+
+                <b>Version: <font color="#737BA8">{{version}}</font></b>
+                
+                <br/>There are <span id="noprotein" name="hu" class="ui-secondary-b-color">{{nop}}</span> structures in V4RNA
+                </span>
+<!--
+                <br/><br/><br/>
+
+                <div class="grid-header" style="width:100%">
+                    <span style="float:right;display:inline-block;">
+                        Search by PDB ID, <span style="border-bottom:1px dotted black; cursor:help;" title="the keywords from the PDB header are used">keyword</span> or <span style="border-bottom:1px dotted black; cursor:help;" title="sources for classification are the family and subgroup fields from the OPM and MPstruc data bases respectively">classification</span>:
+                        <input type="text" size=50 id="txtSearch" value="" />
+                        <div style="display:inline-block;"><i style="display:inline; margin-left:-25px; cursor:pointer;" class="icon-search" title="search"></i></div>
+                    </span>
+                </div>
+-->
+        </div>
+    </div>
+</div>
+
+<div id="navigation" >
+    <div class="ui-widget ui-nav-box">
+        <div class="ui-widget-header">
+            <span>V4RNA</span>
+        </div>
+        <div class="ui-widget-content">
+            <a href="{{ page('welcome') }}">Home</a>
+            <a href="{{ page('grid') }}">Grid</a>
+            <a href="{{ page('manual') }}">Manual</a>
+            <a href="{{ page('method') }}">Methods</a>
+            <a href="{{ page('statistics') }}">Statistics</a>
+            <a href="{{ page('faq') }}">FAQ</a>
+            <br><br>
+            <a href="{{ page('refs') }}">References</a>
+            <a href="{{ page('links') }}">Links</a>
+         </div>
+    </div>
+
+
+</div>
+<div id="content" class="ui-widget">
+    {% block body %}{% endblock %}
+    <div id="footer">
+	<a href = "http://www.charite.de" target = "_blank">
+            <img  align=center src="{{ img('charite_logo.png') }}" alt="charite logo"/>
+	</a>
+        <p style="color:gray; font-size:small;">
+            <a style="color:gray;" href="http://www.charite.de" target="_blank">Charit&eacute; Berlin</a>
+            -
+            <a style="color:gray;" href="http://proteinformatics.de" target="_blank">ProteinFormatics Group</a>
+            - Copyright 2012
+            <br/>
+            <a style="color:gray;" href="mailto:peter.hildebrand@charite.de">We are interested in your feedback</a>
+            <br/>
+            version 1.0 - Jun 2012
+            <br>
+            updated 2013-09-09
+        </p>
+    </div>
+</div>
+
+    
+
+
+<!-- Piwik -->
+<script type="text/javascript">
+    var pkBaseURL = (("https:" == document.location.protocol) ? "https://proteinformatics.charite.de/piwik/" : "http://proteinformatics.charite.de/piwik/");
+    document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+    try {
+        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 3);
+        piwikTracker.trackPageView();
+        piwikTracker.enableLinkTracking();
+    } catch( err ) {}
+</script>
+<noscript>
+    <p><img src="http://proteinformatics.charite.de/piwik/piwik.php?idsite=3" style="border:0" alt="" /></p>
+</noscript>
+<!-- End Piwik Tag -->
+
+
+</body>
+</html>

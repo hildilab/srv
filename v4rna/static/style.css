@@ -1,0 +1,381 @@
+/**
+  * @section General
+  */
+
+html,body {
+    border: 0;
+    font-size: 0.95em;
+    margin: 0.0em;
+    padding: 0;
+    
+}
+hr {
+    margin: 0em;
+    border: 1px solid;
+}
+h3{
+margin: 0px 0px 3px;
+}
+
+h2{
+margin: 0px 0px 5px;
+}
+
+h1{
+margin: 0px 0px 8px;
+}
+
+.ui-primary-color { color: #377CA8; } /* R:55, G: 124, B: 168 */
+.ui-primary-background { background: #377CA8; }
+.ui-primary-color-light { color: #85B5D3; }
+.ui-primary-background-light { background: #85B5D3; }
+.ui-primary-color-dark { color: #12496D; }
+.ui-primary-background-dark { background: #12496D; }
+
+.ui-secondary-a-color { color: #FFCF49; }
+.ui-secondary-a-background { background: #FFCF49; }
+.ui-secondary-a-color-light { color: #FFE59B; }
+.ui-secondary-a-background-light { background: #FFE59B; }
+.ui-secondary-a-color-dark { color: #A68118; }
+.ui-secondary-a-background-dark { background: #A68118; }
+
+.ui-secondary-b-color { color: #FF7749; }
+.ui-secondary-b-background { background: #FF7749; }
+.ui-secondary-b-color-light { color: #FFB49B; }
+.ui-secondary-b-background-light { background: #FFB49B; }
+.ui-secondary-b-color-dark { color: #A63C18; }
+.ui-secondary-b-background-dark { background: #A63C18; }
+
+.ui-background-light { background: #EEEEEE; }
+.ui-color-light { color: #EEEEEE; }
+
+.ui-widget {
+    margin-top: 1.0em;
+    margin-bottom: 0.0em;
+    padding: 0.5em;
+}
+
+
+
+span.left {
+position: absolute;
+left: 0;
+}
+span.right {
+position: absolute;
+right: 0;
+}
+div.line {
+position: relative;
+text-align: center;
+width: 100%;
+}
+
+/**
+  * @section Layout
+  */
+
+#header {
+    position:fixed;
+    left:0px; top:0px;width: 1066px;; height:110px;
+/*    padding: 0px 0px 0.0em 0px;*/
+    
+    text-align: center;
+    background:white;
+    z-index:110;
+    clear:both;
+}
+
+#navigation {
+    position:fixed;
+
+    left: 10px;
+    width: 190px;
+    top: 130px;
+
+    bottom:0px;
+    background:white;
+    z-index:1;
+    
+}
+
+#content {
+    position: absolute;
+    left: 200px;
+    height: 400px;
+    top: 130px;
+    bottom:20px;
+    /*margin: 165px 5px 20px 200px;*/
+
+   /* padding: 170px 0px 0px 0px;*/
+/*    padding: 0px 1px 10px 10px; *//* inside the content container. */
+    
+    width: 810px;
+
+}
+
+#footer {
+    float: right;
+    padding: 0px 0px 0px 0px;
+    width: 100%; /* needed for aligment to center everything including img */
+    text-align: center;
+}
+
+
+
+/**
+  * @section Title/Header
+  */
+
+#title {
+    padding: 0px;
+    padding-left: 15px;
+    border: 0;
+    background: white;
+    text-align:center;
+}
+
+#logo h1 {
+    font-size: 3.0em;
+    margin: 0em;
+}
+
+
+/**
+  * @section Search
+  */
+
+#navlist {
+    padding: 3px 0;
+    margin-left: 0;
+    border-bottom: 1px solid #778;
+    
+    font: bold 12px Verdana, sans-serif;
+}
+
+#navlist li {
+    list-style: none;
+    margin: 0;
+    display: inline;
+}
+
+#navlist li a {
+    padding: 3px 0.5em;
+    margin-left: 3px;
+    border: 1px solid #778;
+    
+    border-bottom: none;
+    background: #DDE;
+    text-decoration: none;
+    position:relative;
+}
+
+#navlist li a:link { color: #448; }
+#navlist li a:visited { color: #667; }
+
+#navlist li a:hover {
+    color: #000;
+    background: #AAE;
+    border-color: #227;
+}
+
+#navlist li a#current {
+    background: white;
+    border-bottom: 1px solid white;
+}
+
+.legend{ font-size:80%; color:#444; }
+
+/**
+  * @section Navigation
+  */
+
+.ui-nav-box {
+    padding: 0.5em;
+}
+
+.ui-nav-box * {
+    padding: 0.15em;
+}
+
+.ui-nav-box .ui-widget-header {
+    border-bottom: 0em;
+}
+
+.ui-nav-box .ui-widget-content {
+    border-top: 0em;
+    
+}
+
+.ui-nav-box .ui-widget-content a {
+    display: block;
+    padding-left: 1em;
+}
+
+
+/**
+  * @section Results OLD?
+  */
+
+/*removed*/
+
+
+
+/**
+  * @section Links
+  */
+/* links */
+    
+p.links {
+  width: 80%;
+  padding: 30px 10px 30px 50px;
+  font-size: 16px;
+  float: left;
+}
+        
+.links img {
+  padding-right: 30px;
+  margin-top: -10px;
+  float: left;
+}
+        
+.links a {
+  text-decoration: none;
+}
+
+/**
+  * @section Usage
+  */
+.example {
+  font-style:italic;
+}
+
+.usage {
+  padding: 3px;
+  vertical-align:top;
+  text-align: left;
+}
+
+
+/* references */
+
+div.reference {
+    display: block;
+    padding: 10px 10px 10px 10px;
+}
+
+div.highlight {
+    background-color: #DDCCCC;
+}
+
+.reference .title {
+    display: block;
+    font-style: italic;
+}
+
+.reference .authors {
+    display: block;
+}
+
+.reference .magazine {
+    float: left;
+    padding-right: 5px;
+    font-weight: bold;
+}c
+
+.reference .year {
+
+}
+
+.reference .issue {
+
+}
+
+a.ref {
+    vertical-align: middle;
+    font-size: 10px;
+    line-height: 100%;
+}  
+/* Manual */
+
+a.intralink{
+   text-decoration: none;
+   color: #000000;
+} 
+a.intralink:hover{
+border-bottom: 1px solid #778;
+}
+/* FAQ */
+td.number{
+  vertical-align:top;
+  text-align: right;
+
+}
+
+/**/
+
+
+/* Statistics image section */
+
+
+#main_view {
+  float: left;
+  padding: 9px 0;
+  margin-left: 0px;
+   z-index:3;
+     
+}
+.container {
+
+  margin: 0px 0 0 0px;
+  
+  position: relative;
+}
+ul.empty {
+  float: left;
+  list-style: none;
+        height: auto;
+  margin: 0; padding: 10px;
+  width: 770px;
+}
+ul.empty li {
+  float: left;
+  position: relative;
+  width: 100px;
+  height: 36px;
+}
+ul.thumb {
+  float: left;
+  list-style: none;
+  margin: 0; padding: 10px;
+  width: 770px;
+}
+ul.thumb li {
+  margin: 0; padding: 5px;
+  float: left;
+  position: relative;
+  width: 75px;
+  height: 28px;
+}
+ul.thumb li img {
+  width: 75px; height: 28px;
+  border: 1px solid #ddd;
+  padding: 5px;
+  background: #f0f0f0;
+  position: absolute;
+  left: 0; top: 0;
+  -ms-interpolation-mode: bicubic; 
+}
+ul.thumb li img.hover {
+        background:url(thumb_bg.png) no-repeat center center;
+  border: none;
+}
+#main_view42 {
+  float: left;
+  padding: 9px 0;
+  margin-left: 0px;
+   z-index:3;
+     
+}
+/*--Hide the description on the list items--*/
+

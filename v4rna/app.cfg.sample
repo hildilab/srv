@@ -1,0 +1,17 @@
+import os
+
+DEBUG = True
+HOST = "0.0.0.0"
+PORT = 4223
+SECRET_KEY = 'development key'
+USERNAME = 'admin1'
+PASSWORD = 'secret'
+DATA_FOLDER   = os.path.abspath("./data")
+DATABASE = os.path.abspath('./data/mppd.db')
+ALLOWED_EXTENSIONS = set([
+	'pdb','trpdb','PDB', 'TRPDB','FASTA','fasta','seq','SEQ'
+])
+PROVI_URL = "http://alexpc/provi/static/html/mphd.html"
+# URL_PREFIX = "/mppd"
+# APP_PATH = "/mnt/bigdisk/MPHD/MPPD/"
+
