@@ -2,22 +2,62 @@
 {% block title %}Manual{% endblock %}
 {% block head %}
 <script type="text/javascript">
-    function popup (url) {
-        fenster = window.open(url, "Popupfenster", "width=4000,height=2000,resizable=yes");
-        fenster.focus();
-        return false;
-    }
+
+ 
+ $(document).ready(function() 
+{
+   // Use the each() method to gain access to each elements attributes
+   $('#content img[rel]').each(function()
+   {
+      $(this).qtip(
+      {
+         content: {
+            // Set the text to an image HTML string with the correct src URL to the loading image you want to use
+            text: '<img class="throbber" src='+$(this).attr('rel')+' width="'+$(this).attr('newwidth')+'" alt="Loading..." />',
+            //url: $(this).attr('rel'), // Use the rel attribute of each element for the url to load
+            title: {
+               text: '',//+$(this).text(), // Give the tooltip a title using each elements text
+               button: 'Close' // Show a close link in the title
+            }
+         },
+        position: {
+            my: 'center',
+            at: 'center',
+            target: $(window) // Or $(document.body), if you don't want it centered as you scroll
+        },
+         show: {
+            event: 'click',
+            solo: true, // Only show one tooltip at a time
+            modal: true, // ...and make it modal
+         },
+         hide: 'click',
+         style: {
+            classes: 'googlemap',
+            tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
+            border: {
+               width: 0,
+               radius: 4
+            },
+            name: 'light', // Use the default light style
+            width: 'auto' // Set the tooltip width
+         }
+      })
+   });
+});
 </script>
 {% endblock%}
 {% block body %}    
 <div>
     <h1>Viewer Tutorial</h1>
+
     <table>
         <tr>
             <td>
-                <a target="_blank" onclick="return popup(href='static/img/screenshot.png');" F1 = window.open('static/img/screenshot.png','Fenster1','width=100%'); return false;"><img src="{{ img('screenshot.png') }}" width="100%" border="0" alt="Vorschaubild"></a>
+                <img src="{{ img('screenshot.png') }}" rel="{{ img('screenshot.png')}}" newwidth="70%" width="50%">
                 <br> click to increase the picture
             </td>
+            
+            
             <td>
                 <a>On startup Provi shows the desired structure in the "ribbon and aromatic" style, coloured according to the packing densities. Internal cavities are represented as simple balls. </a>
                 <br>
@@ -26,7 +66,7 @@
         </tr>
         <tr>
             <td>
-                <a target="_blank" onclick="return popup(href='static/img/general.png');" F1 = window.open('static/img/general.png','Fenster1','width=50%'); return false;"><img src="{{ img('general.png') }}" width="50%" border="0" alt="Vorschaubild"><br><br>
+                <img src="{{ img('general.png') }}" rel="{{ img('general.png')}}" newwidth="" width="50%">
             </td>
             <td>
                 <a>In the first widget you can find the general controls: style, selections and center options</a>
@@ -34,7 +74,7 @@
         </tr>
         <tr>
             <td>
-                <a target="_blank" onclick="return popup(href='static/img/cavity.png');" F1 = window.open('static/img/cavity.png','Fenster1','width=50%'); return false;"><img src="{{ img('cavity.png') }}" width="50%" border="0" alt="Vorschaubild"><br><br>
+                <img src="{{ img('cavity.png') }}" rel="{{ img('cavity.png')}}" newwidth="" width="50%">
             </td>
             <td>
                 <a>The second widget holds the controls for the visualization of the cavities. there are two different ways to represent the cavities.As simple balls (blue checkbox), which is the most proper way to look at all cavities of a structure. </a>
@@ -43,7 +83,7 @@
         </tr>
         <tr>
             <td>
-                <a target="_blank" onclick="return popup(href='static/img/cavityeinzeln.png');" F1 = window.open('static/img/cavityeinzeln.png','Fenster1','width=100%'); return false;"><img src="{{ img('cavityeinzeln.png') }}" width="100%" border="0" alt="Vorschaubild"><br><br>
+                <img src="{{ img('cavityeinzeln.png') }}" rel="{{ img('cavityeinzeln.png')}}" newwidth="70%" width="50%">
             </td>
             <td>
                 <a>To inspect a specific cavity are more detailed view is provided where the exact shape is shown (red checkbox). The green checkbox selects the atoms that are neighbouring the cavity. </a>
@@ -52,7 +92,7 @@
         </tr>
         <tr>
             <td>
-                <a target="_blank" onclick="return popup(href='static/img/Pcking.png');" F1 = window.open('static/img/Pcking.png','Fenster1','width=50%'); return false;"><img src="{{ img('Pcking.png') }}" width="50%" border="0" alt="Vorschaubild"><br><br>
+                <img src="{{ img('Pcking.png') }}" rel="{{ img('Pcking.png')}}" newwidth="" width="50%">
             </td>
             <td>
                 <a>In the third widget the different visualization modes for the packing densities are located. You can choose whether the packing range occurring in the file or a user-defined range is used and what colour scheme is used.</a>
@@ -61,7 +101,7 @@
         </tr>
         <tr>
             <td>
-                <a target="_blank" onclick="return popup(href='static/img/cpk.png');" F1 = window.open('static/img/cpk.png','Fenster1','width=100%'); return false;"><img src="{{ img('cpk.png') }}" width="100%" border="0" alt="Vorschaubild"><br><br>
+                <img src="{{ img('cpk.png') }}" rel="{{ img('cpk.png')}}" newwidth="70%" width="50%">
             </td>
             <td>
                 <a>To get an atom wise representation of the packing density a detailed representation style like cpk should be selected.</a>

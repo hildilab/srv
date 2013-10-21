@@ -379,3 +379,46 @@ ul.thumb li img.hover {
 }
 /*--Hide the description on the list items--*/
 
+
+
+
+/* faq */
+
+div.faq {
+    width: 790px;    
+    padding: 10px 10px 30px 10px;
+    float: left;
+}
+
+.faq div.question {
+    width: 270px;
+    float: left;
+    text-align: right;
+    font-size: 15px;
+}
+
+.faq div.question:first-letter {
+    font-weight: bold;
+}
+    
+.faq div.answer {
+    width: 500px;
+    float: right;
+    text-align: left;
+    position: relative;
+    top: 5px;
+}
+
+
+
+
+
+
+
+
+
+.qtip.googlemap{ max-width: none; }
+
+.ui-tooltip, .qtip{
+    max-width: 10000px; /* Change this? */
+}

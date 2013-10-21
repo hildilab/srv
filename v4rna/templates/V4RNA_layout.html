@@ -167,7 +167,7 @@
 </script>
 <script type="text/javascript">
     try {
-        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 3);
+        var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", {{piwik_tracker_id}} );
         piwikTracker.trackPageView();
         piwikTracker.enableLinkTracking();
     } catch( err ) {}
