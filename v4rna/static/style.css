@@ -412,13 +412,47 @@ div.faq {
 
 
 
+/* references */
 
+div.reference {
+    display: block;
+    padding: 10px 10px 10px 10px;
+}
 
+.reference .title {
+    display: block;
+    font-style: italic;
+}
 
+.reference .authors {
+    display: block;
+}
 
+.reference .magazine {
+    float: left;
+    padding-right: 5px;
+    font-weight: bold;
+}
 
-.qtip.googlemap{ max-width: none; }
+.reference .year {
+
+}
+
+.reference .issue {
+
+}
+
+a.ref {
+    vertical-align: middle;
+    font-size: 10px;
+    line-height: 100%;
+}
 
 .ui-tooltip, .qtip{
     max-width: 10000px; /* Change this? */
+ }
+
+div.odd {
+    background: lightgrey;
 }
+

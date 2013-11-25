@@ -30,6 +30,9 @@
 
     <link rel="stylesheet" href="{{ static('font-awesome/css/font-awesome.min.css') }}">
 
+    <link rel="stylesheet" type="text/css" href="{{ static('js/lightbox/lightbox.css') }}">
+
+    
     <style type="text/css">
         .ui-tooltip, .qtip {
             box-shadow: 0 0 0 2px rgba(0,0,0,0.2);
@@ -50,6 +53,10 @@
     <script type="text/javascript" src="{{ js('jquery-ui/js/jquery-ui.min.js') }}"></script>
     <script type="text/javascript" src="{{ js('jquery.query.js') }}"></script>
     <script type="text/javascript" src="{{ js('qtip2/jquery.qtip.min.js') }}"></script>
+<!--    
+    <script type="text/javascript" src="{{ js('lightbox/jquery-1.10.2.min.js') }}"></script>
+-->
+    <script type="text/javascript" src="{{ js('lightbox/lightbox-2.6.min.js') }}"></script>
 
     <script>
         // make sure a console object exsists
@@ -95,7 +102,7 @@
 <div id="header">
     <div id="title" class="ui-widget ui-widget-content">
         <div id="logo" style="text-align:left;position:relative;height:105px;">
-            <img src="{{ img('zeichnung1.png') }}" style="padding-right: 15px; margin-right:15px;height:105px;float:left;border-right:solid #EEEEEE 2px;" alt="MP:PD LOGO">
+            <img src="{{ img('v4rna.jpg') }}" style="padding-right: 15px; margin-right:15px;height:105px;float:left;border-right:solid #EEEEEE 2px;" alt="V4RNA LOGO">
 
                 <b>Version: <font color="#737BA8">{{version}}</font></b>
                 
@@ -173,7 +180,7 @@
     } catch( err ) {}
 </script>
 <noscript>
-    <p><img src="http://proteinformatics.charite.de/piwik/piwik.php?idsite=3" style="border:0" alt="" /></p>
+    <p><img src="http://proteinformatics.charite.de/piwik/piwik.php?idsite=4" style="border:0" alt="" /></p>
 </noscript>
 <!-- End Piwik Tag -->
 

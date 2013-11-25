@@ -172,6 +172,9 @@ def static_url( filename ):
 def img_url( filename ):
     return static_url( "img/" + filename )
 
+def files_url( filename ):
+    return static_url( "files/"  + filename)
+
 def js_url( filename ):
     return static_url( "js/" + filename )
 
@@ -191,8 +194,8 @@ def pages( page ):
         page = "welcome"
     return render_template(
         '%s.html' % page, nop=NOP, version=VERSION,
-        page=page_url, static=static_url, img=img_url, js=js_url, 
-        provi=provi_url, provi_url=app.config["PROVI_URL"]
+        page=page_url, static=static_url, img=img_url, files=files_url, js=js_url, 
+        provi=provi_url, provi_url=app.config["PROVI_URL"], piwik_tracker_id=4
     )
 
 

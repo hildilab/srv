@@ -1,4 +1,4 @@
-{% extends "MPPD_layout.html" %}
+{% extends "V4RNA_layout.html" %}
 {% block title %}FAQ{% endblock %}
 {% block body %}
 
@@ -115,7 +115,7 @@
 		What residue definitions are used (ProtOr)?
 	    </div>
 	    <div class="answer">
-		To define a single atom in the pdb the ProtOr radii set is used. To look up a particular definition click <a href="static/files/RNAProt.resi-def.dat">here</a>.
+		To define a single atom in the pdb the ProtOr radii set is used. To look up a particular definition click <a href="{{ files('RNAProt.resi-def.dat') }}">here</a>.
 	    </div>
 	</div>
 	<div class="faq">

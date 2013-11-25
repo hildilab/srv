@@ -1,14 +1,5 @@
 {% extends "V4RNA_layout.html" %}
 {% block title %}General statistics{% endblock %}
-{% block head %}
-<script type="text/javascript">
-    function popup (url) {
-        fenster = window.open(url, "Popupfenster", "width=4000,height=2000,resizable=yes");
-        fenster.focus();
-        return false;
-    }
-</script>
-{% endblock%}
 {% block body %}
 
 <div>
@@ -24,14 +15,18 @@
     </p>
     <br><br>
     <h2>Statistics</h2>
-
-    <a target="_blank" onclick="return popup(href='static/img/pdp.png');" F1 = window.open('static/img/pdp.png','Fenster1','width=400,height=200,left=0,top=0'); return false;"><img src="{{ img('pdp.png') }}" width="400" height="200" border="0" alt="Vorschaubild"></a>
-    <a target="_blank" onclick='return popup(href="static/img/pdpr.png");' F1 = window.open('static/img/pdpr.png','Fenster1','width=400,height=200,left=0,top=0'); return false;"><img src="{{ img('pdpr.png') }}" width="400" height="200" border="0" alt="Vorschaubild"></a>
-    <a target="_blank" onclick='return popup(href="static/img/pdr2.png");' F1 = window.open('static/img/pdr2.png','Fenster1','width=400,height=200,left=0,top=0'); return false;"><img src="{{ img('pdr2.png') }}" width="400" height="200" border="0" alt="Vorschaubild"></a>
-    <font size='1'>(to increase, please click on the figure)</font>
-    <br><br>
-    <p>
+    <a>
         The figures depict the average packing densities of the protors (figure 1), the protors per residue (figure 2) or the interdependency between packing densities, structure resolution and size (figure 3). Only the buried atoms of the structures of the reference dataset were taken into account.
-    </p>
+    </a>
+    <br><br>
+    <a href="{{ img('pdp.png') }}" data-lightbox="pdp" ><img src="{{ img('pdp.png')}}" width="50%"</a>
+    <font size='1'>Figure 1 (to increase, please click on the figure)</font>
+    <a href="{{ img('pdpr.png') }}" data-lightbox="pdpr" ><img src="{{ img('pdpr.png')}}" width="50%"</a>
+    <font size='1'>Figure 2 (to increase, please click on the figure)</font>
+    <a href="{{ img('pdr2.png') }}" data-lightbox="pdr2" ><img src="{{ img('pdr2.png')}}" width="50%"</a>
+    <font size='1'>Figure 3 (to increase, please click on the figure)</font>
+    
+
+    
 </div>
 {%endblock%}
