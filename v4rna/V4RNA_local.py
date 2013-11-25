@@ -57,8 +57,11 @@ def read_entries( keywds=None, sortby='pdb_id',
     def phrase( q ):
         return ("( "
             "pdb_id = \'%(q)s\' COLLATE NOCASE OR "
-            "pdb_title like \'%%%(q)s%%\' COLLATE NOCASE"
-
+            "pdb_keywords like \'%%%(q)s%%\' COLLATE NOCASE OR "
+            "pdb_title like \'%%%(q)s%%\' COLLATE NOCASE OR "
+            "mpstruc_subgroup like \'%%%(q)s%%\' COLLATE NOCASE OR "
+            "mpstruc_name like \'%%%(q)s%%\' COLLATE NOCASE OR "
+            "opm_family like \'%%%(q)s%%\' COLLATE NOCASE"
         " )") % { "q": q }
 
     if keywds:
@@ -189,8 +192,7 @@ def pages( page ):
     return render_template(
         '%s.html' % page, nop=NOP, version=VERSION,
         page=page_url, static=static_url, img=img_url, js=js_url, 
-        provi=provi_url, provi_url=app.config["PROVI_URL"],
-        piwik_tracker_id=app.config["PIWIK_TRACKER_ID"]
+        provi=provi_url, provi_url=app.config["PROVI_URL"]
     )
 
 

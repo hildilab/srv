@@ -166,9 +166,9 @@
 
     function DataItem( row ) {
       this.pdb_id = row[0];
-      this.pdb_res = row[1];
-      this.pdb_title = row[2];
-      this.pdb_experiment = row[3];
+      this.pdb_res = frmt( row[1] );
+      this.pdb_title = frmt( row[2] );
+      this.pdb_experiment = frmt( row[3] );
       this.pdb_zscorerms = row[4];
     }
 
@@ -224,7 +224,6 @@
       // var url = "http://api.thriftdb.com/api.hnsearch.com/items/_search?filter[fields][type][]=submission&q=" + searchstr + "&start=" + (fromPage * PAGESIZE) + "&limit=" + (((toPage - fromPage) * PAGESIZE) + PAGESIZE);
 
       searchstr = encodeURIComponent( searchstr );
-      searchstr = '';
       var url = "../query?keywds=" + searchstr + "&start=" + (fromPage * PAGESIZE) + "&limit=" + (((toPage - fromPage) * PAGESIZE) + PAGESIZE);
 
       if (sortcol != null) {
