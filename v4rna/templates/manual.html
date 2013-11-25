@@ -1,50 +1,6 @@
 {% extends "V4RNA_layout.html" %}
 {% block title %}Manual{% endblock %}
 {% block head %}
-<script type="text/javascript">
-
- 
- $(document).ready(function() 
-{
-   // Use the each() method to gain access to each elements attributes
-   $('#content img[rel]').each(function()
-   {
-      $(this).qtip(
-      {
-         content: {
-            // Set the text to an image HTML string with the correct src URL to the loading image you want to use
-            text: '<img class="throbber" src='+$(this).attr('rel')+' width="'+$(this).attr('newwidth')+'" alt="Loading..." />',
-            //url: $(this).attr('rel'), // Use the rel attribute of each element for the url to load
-            title: {
-               text: '',//+$(this).text(), // Give the tooltip a title using each elements text
-               button: 'Close' // Show a close link in the title
-            }
-         },
-        position: {
-            my: 'center',
-            at: 'center',
-            target: $(window) // Or $(document.body), if you don't want it centered as you scroll
-        },
-         show: {
-            event: 'click',
-            solo: true, // Only show one tooltip at a time
-            modal: true, // ...and make it modal
-         },
-         hide: 'click',
-         style: {
-            classes: 'googlemap',
-            tip: true, // Apply a speech bubble tip to the tooltip at the designated tooltip corner
-            border: {
-               width: 0,
-               radius: 4
-            },
-            name: 'light', // Use the default light style
-            width: 'auto' // Set the tooltip width
-         }
-      })
-   });
-});
-</script>
 {% endblock%}
 {% block body %}    
 <div>
@@ -53,7 +9,7 @@
     <table>
         <tr>
             <td>
-                <img src="{{ img('screenshot.png') }}" rel="{{ img('screenshot.png')}}" newwidth="70%" width="50%">
+                <a href="{{ img('screenshot.png') }}" data-lightbox="image-1" ><img src="{{ img('screenshot.png')}}" width="50%"</a>
                 <br> click to increase the picture
             </td>
             
@@ -66,7 +22,7 @@
         </tr>
         <tr>
             <td>
-                <img src="{{ img('general.png') }}" rel="{{ img('general.png')}}" newwidth="" width="50%">
+                <a href="{{ img('general.png') }}" data-lightbox="general" ><img src="{{ img('general.png')}}" width="50%"</a>
             </td>
             <td>
                 <a>In the first widget you can find the general controls: style, selections and center options</a>
@@ -74,7 +30,7 @@
         </tr>
         <tr>
             <td>
-                <img src="{{ img('cavity.png') }}" rel="{{ img('cavity.png')}}" newwidth="" width="50%">
+                <a href="{{ img('cavity.png') }}" data-lightbox="cavity" ><img src="{{ img('cavity.png')}}" width="50%"</a>
             </td>
             <td>
                 <a>The second widget holds the controls for the visualization of the cavities. there are two different ways to represent the cavities.As simple balls (blue checkbox), which is the most proper way to look at all cavities of a structure. </a>
@@ -83,7 +39,7 @@
         </tr>
         <tr>
             <td>
-                <img src="{{ img('cavityeinzeln.png') }}" rel="{{ img('cavityeinzeln.png')}}" newwidth="70%" width="50%">
+                <a href="{{ img('cavityeinzeln.png') }}" data-lightbox="cavityeinzeln" ><img src="{{ img('cavityeinzeln.png')}}" width="50%"</a>
             </td>
             <td>
                 <a>To inspect a specific cavity are more detailed view is provided where the exact shape is shown (red checkbox). The green checkbox selects the atoms that are neighbouring the cavity. </a>
@@ -92,7 +48,7 @@
         </tr>
         <tr>
             <td>
-                <img src="{{ img('Pcking.png') }}" rel="{{ img('Pcking.png')}}" newwidth="" width="50%">
+                <a href="{{ img('Pcking.png') }}" data-lightbox="Pcking" ><img src="{{ img('Pcking.png')}}" width="50%"</a>
             </td>
             <td>
                 <a>In the third widget the different visualization modes for the packing densities are located. You can choose whether the packing range occurring in the file or a user-defined range is used and what colour scheme is used.</a>
@@ -101,7 +57,7 @@
         </tr>
         <tr>
             <td>
-                <img src="{{ img('cpk.png') }}" rel="{{ img('cpk.png')}}" newwidth="70%" width="50%">
+                <a href="{{ img('cpk.png') }}" data-lightbox="cpk" ><img src="{{ img('cpk.png')}}" width="50%"</a>
             </td>
             <td>
                 <a>To get an atom wise representation of the packing density a detailed representation style like cpk should be selected.</a>
