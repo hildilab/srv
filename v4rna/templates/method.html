@@ -7,7 +7,7 @@
     <br><br>
     <h2>Calculation</h2>
     <p>
-        Voronoia4RNA calculates atomic volumes by applying the Voronoi Cell algorithm described in <a target="_self"  href="{{ page('refs')}}">[2]</a>. The volume calculated for each atom is split into two portions, both of which are represented in the .vol files produced by the server. The first is the vdW volume (the volume inside an atoms' van der Waals sphere), the second is the solvent excluded volume (within a 1.4 Angstrom layer around the vdW sphere). The space is allocated among atoms using hyperboloid surfaces. The calculation is performed by applying a cubic lattice of 0.1 Angstrom grid width.
+        Voronoia4RNA calculates atomic volumes by applying the Voronoi Cell algorithm described in <a target="_self"  href="${h.url_for('tools/v4rna/references')}">[2]</a>. The volume calculated for each atom is split into two portions, both of which are represented in the .vol files produced by the server. The first is the vdW volume (the volume inside an atoms' van der Waals sphere), the second is the solvent excluded volume (within a 1.4 Angstrom layer around the vdW sphere). The space is allocated among atoms using hyperboloid surfaces. The calculation is performed by applying a cubic lattice of 0.1 Angstrom grid width.
     </p>
     <p>
         Cavities are found by applying a Delaunay triangulation and looking for edges above a cutoff length in the resulting graph corresponding to a 1.4 Angstrom probe radius. Their locations are approximated by the center of mass of all neighboring atoms.
@@ -26,7 +26,7 @@
     <br><br>
     <h2>Packing density</h2>
     <p>
-        The atomic packing density quantifies the space between atoms. It allows a better approximation of van der Waals contacts and surfaces (and thus forces) than the simple calculation of solvent excluded surfaces that does not respect packing defects enclosed therein. It uses two portions of atomic volume, the van der Waals volume V(vdW) (inside the van der Waals radius), and the solvent excluded volume V(se) (a 1.4 Angstrom layer cushioning the vdW sphere). The Voronoi Cell algorithm <a target="_self"  href="{{ page('refs')}}">[9]</a> calculates, how much of the V(vdW) and V(se) is occupied by other atoms. The packing density (PD) is then calculated from the remaining volumes V(vdW) and the sum of V(vdW) and V(se). 
+        The atomic packing density quantifies the space between atoms. It allows a better approximation of van der Waals contacts and surfaces (and thus forces) than the simple calculation of solvent excluded surfaces that does not respect packing defects enclosed therein. It uses two portions of atomic volume, the van der Waals volume V(vdW) (inside the van der Waals radius), and the solvent excluded volume V(se) (a 1.4 Angstrom layer cushioning the vdW sphere). The Voronoi Cell algorithm <a target="_self"  href="${h.url_for('tools/v4rna/references')}">[9]</a> calculates, how much of the V(vdW) and V(se) is occupied by other atoms. The packing density (PD) is then calculated from the remaining volumes V(vdW) and the sum of V(vdW) and V(se). 
     </p>
     <p>
     PD = V(vdW) / [V(vdW) + V(se)]
