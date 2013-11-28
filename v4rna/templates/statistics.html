@@ -1,0 +1,32 @@
+{% extends "V4RNA_layout.html" %}
+{% block title %}General statistics{% endblock %}
+{% block body %}
+
+<div>
+    <h1>Reference dataset and Statistics</h1>
+    <br><br>
+    <h2>Reference dataset</h2>
+    <p>
+        Voronoia4RNA includes a dataset of presently 1766 PDB structures. All structures are considered containing at least one RNA chain and being obtained with a resolution of 3.5 Angstrom or better. Structures solved by NMR are generally also included.
+    </p>
+    <br><br>
+    <p>
+        To calculate reference values, the non-redundant dataset of the <a target="_blank" href='http://rna.bgsu.edu/nrlist/lists/20120623/Nonredundant_3,5A.html'>BGSU RNA Structural Bioinformatics Group</a> is used. This dataset contains 621 structures of RNA and complexes with a resolution of at least 3.5 Angstrom.
+    </p>
+    <br><br>
+    <h2>Statistics</h2>
+    <a>
+        The figures depict the average packing densities of the protors (figure 1), the protors per residue (figure 2) or the interdependency between packing densities, structure resolution and size (figure 3). Only the buried atoms of the structures of the reference dataset were taken into account.
+    </a>
+    <br><br>
+    <a href="{{ img('pdp.png') }}" data-lightbox="pdp" ><img src="{{ img('pdp.png')}}" width="50%"</a>
+    <font size='1'>Figure 1 (to increase, please click on the figure)</font>
+    <a href="{{ img('pdpr.png') }}" data-lightbox="pdpr" ><img src="{{ img('pdpr.png')}}" width="50%"</a>
+    <font size='1'>Figure 2 (to increase, please click on the figure)</font>
+    <a href="{{ img('pdr2.png') }}" data-lightbox="pdr2" ><img src="{{ img('pdr2.png')}}" width="50%"</a>
+    <font size='1'>Figure 3 (to increase, please click on the figure)</font>
+    
+
+    
+</div>
+{%endblock%}

@@ -1,0 +1,14 @@
+<VirtualHost *:80>
+    ServerName localhost
+
+    WSGIDaemonProcess mppd user=arose group=arose threads=5
+    WSGIScriptAlias /mppd /var/www/mppd/mppd.wsgi
+
+    <Directory /var/www/mppd>
+        WSGIProcessGroup mppd
+        WSGIApplicationGroup %{GLOBAL}
+        WSGIScriptReloading On
+        Order deny,allow
+        Allow from all
+    </Directory>
+</VirtualHost>

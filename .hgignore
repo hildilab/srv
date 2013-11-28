@@ -16,3 +16,8 @@ Icon*
 
 mppd/data/*
 mppd/app.cfg
+v4rna/venv/local/lib
+v4rna/venv/local/include
+v4rna/flask/venv/
+v4rna/flask
+v4rna/venv
