@@ -25,7 +25,7 @@ app.config.from_pyfile( cfg_file )
 
 URL_DIR = app.config.get("URL_PREFIX", "")
 APP_PATH = app.config.get("APP_PATH", "")
-VERSION = "3.1"
+VERSION = "2014-05-21"
 
 
 
